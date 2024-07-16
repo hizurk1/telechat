@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:telechat/app/themes/themes.dart';
 
 extension TextStyleExt on TextStyle {
   TextStyle get sub => copyWith(color: Colors.grey);
 
   TextStyle get dark => copyWith(color: Colors.grey.shade700);
+
+  TextStyle get white => copyWith(color: Colors.white);
+
+  TextStyle get bg => copyWith(color: AppColors.background);
+
 }
 
 class AppTextStyle {

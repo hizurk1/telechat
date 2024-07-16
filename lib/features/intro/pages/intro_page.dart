@@ -23,7 +23,7 @@ class IntroPage extends StatelessWidget {
                 style: AppTextStyle.headingL,
                 textAlign: TextAlign.center,
               ),
-              const Gap(12),
+              const Gap.medium(),
               Expanded(
                 child: SvgPicture.asset(
                   Assets.svgs.intro,
@@ -31,13 +31,13 @@ class IntroPage extends StatelessWidget {
                   height: 300.r,
                 ),
               ),
-              const Gap(12),
+              const Gap.medium(),
               Text(
                 "Read our Privacy Policy and tap \"Agree and continue\" to accept the Terms of Service.",
                 style: AppTextStyle.bodyS.dark,
                 textAlign: TextAlign.center,
               ),
-              const Gap(12),
+              const Gap.medium(),
               PrimaryButton.text(
                 onPressed: () {},
                 text: "Agree and continue",
