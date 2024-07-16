@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AppNavigator {
-  static final navigationKey = GlobalKey<NavigatorState>();
+  static final navigatorKey = GlobalKey<NavigatorState>();
 
-  static BuildContext? get currentContext => navigationKey.currentContext;
+  static BuildContext? get currentContext => navigatorKey.currentContext;
 
   static popDialog() => Navigator.of(currentContext!).pop();
 
