@@ -1,0 +1,95 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+class AppTextStyle {
+  AppTextStyle._();
+
+  //! Header
+  /// fontSize: 36 [bold]
+  final TextStyle headingXL = TextStyle(
+    fontSize: 36.sp,
+    fontWeight: FontWeight.bold,
+  );
+
+  /// fontSize: 34 [bold]
+  final TextStyle headingL = TextStyle(
+    fontSize: 34.sp,
+    fontWeight: FontWeight.bold,
+  );
+
+  /// fontSize: 32 [w500]
+  final TextStyle headingM = TextStyle(
+    fontSize: 32.sp,
+    fontWeight: FontWeight.w500,
+  );
+
+  /// fontSize: 30 [normal]
+  final TextStyle headingS = TextStyle(
+    fontSize: 30.sp,
+    fontWeight: FontWeight.normal,
+  );
+
+  //! Title
+  /// fontSize: 28 [bold]
+  final TextStyle titleL = TextStyle(
+    fontSize: 28.sp,
+    fontWeight: FontWeight.bold,
+  );
+
+  /// fontSize: 24 [w500]
+  final TextStyle titleM = TextStyle(
+    fontSize: 24.sp,
+    fontWeight: FontWeight.w500,
+  );
+
+  /// fontSize: 20 [normal]
+  final TextStyle titleS = TextStyle(
+    fontSize: 20.sp,
+    fontWeight: FontWeight.normal,
+  );
+
+  //! Body
+  /// fontSize: 18 [normal]
+  final TextStyle bodyL = TextStyle(
+    fontSize: 18.sp,
+    fontWeight: FontWeight.normal,
+  );
+
+  /// fontSize: 16 [normal]
+  final TextStyle bodyM = TextStyle(
+    fontSize: 16.sp,
+    fontWeight: FontWeight.normal,
+  );
+
+  /// fontSize: 14 [normal]
+  final TextStyle bodyS = TextStyle(
+    fontSize: 14.sp,
+    fontWeight: FontWeight.normal,
+  );
+
+  //! Caption
+  /// fontSize: 13 [w300]
+  final TextStyle caption = TextStyle(
+    fontSize: 13.sp,
+    fontWeight: FontWeight.normal,
+  );
+
+  //! Label
+  /// fontSize: 12 [bold]
+  final TextStyle labelL = TextStyle(
+    fontSize: 12.sp,
+    fontWeight: FontWeight.normal,
+  );
+
+  /// fontSize: 11 [w500]
+  final TextStyle labelM = TextStyle(
+    fontSize: 11.sp,
+    fontWeight: FontWeight.w500,
+  );
+
+  /// fontSize: 10 [normal]
+  final TextStyle labelS = TextStyle(
+    fontSize: 10.sp,
+    fontWeight: FontWeight.normal,
+  );
+}
