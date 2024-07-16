@@ -1,0 +1,95 @@
+name: telechat
+description: "A new Flutter project."
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.2.6 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  firebase_core: ^2.27.0
+  firebase_auth: ^4.17.8
+  cloud_firestore: ^4.15.8
+  firebase_storage: ^11.6.9
+  fpdart: ^1.1.0
+  equatable: ^2.0.5
+  logger: ^2.4.0
+  intl: ^0.19.0
+  path: ^1.8.3
+  collection: ^1.18.0
+  flutter_svg: ^2.0.10+1
+  flutter_screenutil: ^5.9.3
+  rxdart: ^0.28.0
+  shared_preferences: ^2.2.3
+  flutter_gen: ^5.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+  build_runner: ^2.4.9
+  flutter_gen_runner: ^5.6.0
+  flutter_flavorizr: ^2.2.3
+
+# fluttergen -c pubspec.yaml
+flutter_gen:
+  output: lib/app/constants/gen/ # Optional (default: lib/gen/)
+  line_length: 80 # Optional (default: 80)
+
+  # Optional
+  integrations:
+    flutter_svg: false
+    flare_flutter: false
+    rive: false
+    lottie: false
+
+# dart run flutter_flavorizr -p android:buildGradle,android:androidManifest,google:firebase
+flavorizr:
+  flavors:
+    dev:
+      app:
+        name: "Dev (Telechat)"
+
+      android:
+        applicationId: "com.example.telechat"
+        # resValues:
+        #   ads_app_id:
+        #     type: "string"
+        #     value: "ca-app-pub-3940256099942544~3347511713"
+        firebase:
+          config: ".firebase/dev/google-services.json"
+      # ios:
+      #   bundleId: "com.example.telechat"
+
+    prod:
+      app:
+        name: "Telechat"
+
+      android:
+        applicationId: "com.example.telechat"
+        # resValues:
+        #   ads_app_id:
+        #     type: "string"
+        #     value: "ca-app-pub-3940256099942544~3347511713"
+        firebase:
+          config: ".firebase/prod/google-services.json"
+      # ios:
+      #   bundleId: "com.example.telechat"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/svgs/
+    - assets/jsons/
+    - assets/fonts/
+
+  # fonts:
