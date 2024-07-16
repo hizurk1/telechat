@@ -11,11 +11,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      themeMode: ThemeMode.dark,
+      debugShowCheckedModeBanner: false,
       theme: AppTheme.appTheme,
       initialRoute: IntroPage.route,
       onGenerateRoute: AppRoutes.generateRoutes,
-      navigatorKey: AppNavigator.navigationKey,
+      navigatorKey: AppNavigator.navigatorKey,
     );
   }
 }

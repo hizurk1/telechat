@@ -5,8 +5,7 @@ import 'app_color.dart';
 class AppTheme {
   AppTheme._();
 
-  static final appTheme = ThemeData(
-    fontFamily: 'Roboto',
+  static final appTheme = ThemeData.dark().copyWith(
     scaffoldBackgroundColor: AppColors.background,
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.primary,
