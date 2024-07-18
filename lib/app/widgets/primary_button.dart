@@ -9,6 +9,9 @@ class PrimaryButton extends StatelessWidget {
     required this.onPressed,
     required this.child,
     this.backgroundColor,
+    this.textColor,
+    this.height,
+    this.width,
   });
 
   PrimaryButton.text({
@@ -16,21 +19,37 @@ class PrimaryButton extends StatelessWidget {
     required this.onPressed,
     required String text,
     this.backgroundColor,
+    this.textColor,
+    this.height,
+    this.width,
   }) : child = Text(
           text,
-          style: AppTextStyle.bodyS.bg,
+          style: AppTextStyle.bodyS.copyWith(
+            color: textColor ?? AppColors.background,
+          ),
           textAlign: TextAlign.center,
         );
 
   final VoidCallback onPressed;
   final Widget child;
+
+  /// Default set to [primary]
   final Color? backgroundColor;
+
+  /// Default set to [background]
+  final Color? textColor;
+
+  /// Default set to 52
+  final double? height;
+
+  /// Set to `0` to make it fit the child.
+  final double? width;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 52.h,
-      width: context.screenWidth,
+      height: height ?? 52.h,
+      width: width == null ? context.screenWidth : (width! > 0 ? width : null),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(

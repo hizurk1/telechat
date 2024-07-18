@@ -1,31 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:telechat/app/themes/app_color.dart';
 
 class LoadingIndicatorWidget extends StatelessWidget {
   const LoadingIndicatorWidget({
     super.key,
-    this.color,
-    this.size,
-    this.lineWidth,
+    this.color = AppColors.primary,
+    this.size = 20,
+    this.lineWidth = 2.5,
   });
 
-  /// Default set to Colors.grey[600]
-  final Color? color;
-
-  /// Default set to 30
-  final double? size;
-
-  /// Default set to 3
-  final double? lineWidth;
+  final Color color;
+  final double size;
+  final double lineWidth;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: size?.r ?? 30.r,
-      width: size?.r ?? 30.r,
+      height: size,
+      width: size,
       child: CircularProgressIndicator(
-        strokeWidth: lineWidth ?? 3,
-        color: color ?? Colors.grey[600],
+        strokeWidth: lineWidth,
+        color: color,
       ),
     );
   }

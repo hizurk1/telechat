@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:telechat/app/constants/gen/assets.gen.dart';
 import 'package:telechat/app/themes/themes.dart';
 import 'package:telechat/app/widgets/widgets.dart';
+import 'package:telechat/features/authentication/pages/sign_in_page.dart';
 
 class IntroPage extends StatelessWidget {
   static const String route = "/intro";
@@ -39,7 +40,7 @@ class IntroPage extends StatelessWidget {
               ),
               const Gap.medium(),
               PrimaryButton.text(
-                onPressed: () {},
+                onPressed: () => Navigator.pushNamed(context, SignInPage.route),
                 text: "Agree and continue",
               ),
             ],

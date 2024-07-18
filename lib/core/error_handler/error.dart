@@ -10,8 +10,12 @@ class Error extends Equatable {
   List<Object?> get props => [message, stackTrace];
 }
 
-class ServerError extends Error {
-  const ServerError({required super.message, super.stackTrace});
+class DatabaseError extends Error {
+  const DatabaseError({required super.message, super.stackTrace});
+}
+
+class AuthenticationError extends Error {
+  const AuthenticationError({required super.message, super.stackTrace});
 }
 
 class UnknownError extends Error {

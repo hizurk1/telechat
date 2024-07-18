@@ -11,6 +11,11 @@ extension TextStyleExt on TextStyle {
 
   TextStyle get bg => copyWith(color: AppColors.background);
 
+  TextStyle get primary => copyWith(color: AppColors.primary);
+
+  TextStyle get bold => copyWith(fontWeight: FontWeight.bold);
+
+  TextStyle get normal => copyWith(fontWeight: FontWeight.normal);
 }
 
 class AppTextStyle {
