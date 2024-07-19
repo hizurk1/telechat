@@ -81,8 +81,9 @@ class AuthController {
         profileImage: photoUrl,
         phoneNumber: currentUser!.phoneNumber!,
         isOnline: true,
-        groupIds: const [],
         contactIds: const [],
+        blockedIds: const [],
+        groupIds: const [],
       );
 
       final result = await authRepository.saveUserDataToDB(
@@ -131,13 +132,11 @@ class AuthController {
   Future<void> verifyOTP({
     required String verificationId,
     required String userOTP,
-    required VoidCallback onCompleted,
   }) async {
     final result = await authRepository.verifyOTP(
       verificationId: verificationId,
       userOTP: userOTP,
     );
-    onCompleted.call();
     result.fold(
       (error) {
         logger.e(error.message);
@@ -147,7 +146,11 @@ class AuthController {
         );
       },
       (userCredential) {
-        AppNavigator.pushNamedAndRemoveUntil(FillUserInfoPage.route);
+        if (userCredential.additionalUserInfo!.isNewUser) {
+          AppNavigator.pushNamedAndRemoveUntil(FillUserInfoPage.route);
+        } else {
+          AppNavigator.pushNamedAndRemoveUntil(HomePage.route);
+        }
       },
     );
   }

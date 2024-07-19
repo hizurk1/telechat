@@ -3,7 +3,6 @@ import 'dart:io' show File;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:telechat/app/constants/app_const.dart';
 import 'package:telechat/app/constants/gen/assets.gen.dart';
 import 'package:telechat/app/themes/app_color.dart';
@@ -64,8 +63,7 @@ class _FillUserInfoPageState extends ConsumerState<FillUserInfoPage> {
                 right: 0,
                 child: GestureDetector(
                   onTap: () => onSelectImage(),
-                  child: SvgPicture.asset(
-                    Assets.svgs.addImage,
+                  child: Assets.svgs.addImage.svg(
                     height: 25.r,
                     width: 25.r,
                   ),

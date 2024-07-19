@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:telechat/app/themes/app_text_theme.dart';
-import 'package:telechat/features/chat/pages/chat_page.dart';
+import 'package:telechat/features/chat/pages/chat_list_page.dart';
 
 class HomePage extends StatelessWidget {
   static const String route = "/home";
@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           leading: const Icon(Icons.menu, color: Colors.white),
-          title: Text("Telechat", style: AppTextStyle.bodyL.white.bold),
+          title: Text("Telechat", style: AppTextStyle.titleS.white.bold),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 3),
@@ -24,8 +24,8 @@ class HomePage extends StatelessWidget {
             )
           ],
           bottom: TabBar(
-            labelStyle: AppTextStyle.bodyM.white,
-            unselectedLabelStyle: AppTextStyle.bodyM.dark,
+            labelStyle: AppTextStyle.bodyM.white.medium,
+            unselectedLabelStyle: AppTextStyle.bodyM.sub.medium,
             indicatorColor: Colors.grey,
             indicatorSize: TabBarIndicatorSize.tab,
             indicatorWeight: 1,

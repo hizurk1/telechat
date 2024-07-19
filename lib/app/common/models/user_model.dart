@@ -8,6 +8,7 @@ class UserModel extends Equatable {
   final String phoneNumber;
   final bool isOnline;
   final List<String> contactIds;
+  final List<String> blockedIds;
   final List<String> groupIds;
   const UserModel({
     required this.uid,
@@ -16,6 +17,7 @@ class UserModel extends Equatable {
     required this.phoneNumber,
     required this.isOnline,
     required this.contactIds,
+    required this.blockedIds,
     required this.groupIds,
   });
 
@@ -26,6 +28,7 @@ class UserModel extends Equatable {
     String? phoneNumber,
     bool? isOnline,
     List<String>? contactIds,
+    List<String>? blockedIds,
     List<String>? groupIds,
   }) {
     return UserModel(
@@ -35,6 +38,7 @@ class UserModel extends Equatable {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       isOnline: isOnline ?? this.isOnline,
       contactIds: contactIds ?? this.contactIds,
+      blockedIds: blockedIds ?? this.blockedIds,
       groupIds: groupIds ?? this.groupIds,
     );
   }
@@ -47,6 +51,7 @@ class UserModel extends Equatable {
       'phoneNumber': phoneNumber,
       'isOnline': isOnline,
       'contactIds': contactIds,
+      'blockedIds': blockedIds,
       'groupIds': groupIds,
     };
   }
@@ -58,10 +63,12 @@ class UserModel extends Equatable {
       profileImage: map['profileImage'] as String,
       phoneNumber: map['phoneNumber'] as String,
       isOnline: map['isOnline'] as bool,
-      contactIds: List<String>.from((map['contactIds'])),
-      groupIds: List<String>.from((map['groupIds'])),
+      contactIds: List<String>.from(map['contactIds']),
+      blockedIds: List<String>.from(map['blockedIds']),
+      groupIds: List<String>.from(map['groupIds']),
     );
   }
+
   @override
   bool get stringify => true;
 
@@ -74,6 +81,7 @@ class UserModel extends Equatable {
       phoneNumber,
       isOnline,
       contactIds,
+      blockedIds,
       groupIds,
     ];
   }

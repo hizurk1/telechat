@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:telechat/app/constants/gen/assets.gen.dart';
+import 'package:telechat/app/themes/app_color.dart';
 import 'package:telechat/app/themes/app_text_theme.dart';
 import 'package:telechat/app/widgets/gap.dart';
 import 'package:telechat/app/widgets/primary_button.dart';
@@ -17,18 +20,35 @@ class ErrorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          children: [
-            Text(
-              message ?? "Something went wrong! Please try again.",
-              style: AppTextStyle.bodyL.white,
-            ),
-            const Gap.medium(),
-            PrimaryButton.text(
-              onPressed: () {},
-              text: "Try again",
-            ),
-          ],
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Assets.jsons.catError.lottie(
+                height: 200.r,
+                width: 200.r,
+              ),
+              Text(
+                message ?? "Something went wrong! Please try again.",
+                style: AppTextStyle.bodyL.white,
+              ),
+              const Gap.extra(),
+              PrimaryButton(
+                onPressed: () {},
+                width: 0,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.replay_rounded, color: AppColors.background, size: 20.r),
+                    const Gap(4),
+                    Text("Retry", style: AppTextStyle.bodyS.bg),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

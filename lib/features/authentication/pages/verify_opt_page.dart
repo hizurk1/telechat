@@ -131,14 +131,14 @@ class _VerifyOTPPageState extends ConsumerState<VerifyOTPPage> {
         ],
       ),
       bottom: PrimaryButton(
-        onPressed: () {
+        onPressed: () async {
           if (!confirmNotifier.value) {
             confirmNotifier.value = true;
-            ref.read(authControllerProvider).verifyOTP(
+            await ref.read(authControllerProvider).verifyOTP(
                   verificationId: verificationId!,
                   userOTP: otpController.text.trim(),
-                  onCompleted: () => confirmNotifier.value = false,
                 );
+            confirmNotifier.value = false;
           }
         },
         child: ValueListenableBuilder(

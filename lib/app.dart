@@ -23,16 +23,18 @@ class MyApp extends ConsumerWidget {
       builder: (context, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
+          themeMode: ThemeMode.dark,
           theme: AppTheme.appTheme,
           onGenerateRoute: AppRoutes.generateRoutes,
           navigatorKey: AppNavigator.navigatorKey,
           home: ref.watch(userDataProvider).when(
+                skipLoadingOnRefresh: false,
                 data: (user) {
                   return (user != null) ? const HomePage() : const IntroPage();
                 },
                 error: (_, __) => ErrorPage(
                   message: "Unable to load your information.",
-                  onRetry: () => ref.invalidate(userDataProvider),
+                  onRetry: () => ref.refresh(userDataProvider.future),
                 ),
                 loading: () => const LoadingIndicatorPage(),
               ),

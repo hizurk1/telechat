@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:telechat/app/constants/gen/assets.gen.dart';
 import 'package:telechat/app/themes/themes.dart';
 import 'package:telechat/app/widgets/widgets.dart';
@@ -26,8 +25,7 @@ class IntroPage extends StatelessWidget {
               ),
               const Gap.medium(),
               Expanded(
-                child: SvgPicture.asset(
-                  Assets.svgs.intro,
+                child: Assets.svgs.intro.svg(
                   width: 300.r,
                   height: 300.r,
                 ),
