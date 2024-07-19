@@ -10,6 +10,9 @@
 class $AssetsSvgsGen {
   const $AssetsSvgsGen();
 
+  /// File path: assets/svgs/add_image.svg
+  String get addImage => 'assets/svgs/add_image.svg';
+
   /// File path: assets/svgs/back.svg
   String get back => 'assets/svgs/back.svg';
 
@@ -25,8 +28,12 @@ class $AssetsSvgsGen {
   /// File path: assets/svgs/intro.svg
   String get intro => 'assets/svgs/intro.svg';
 
+  /// File path: assets/svgs/user_green.svg
+  String get userGreen => 'assets/svgs/user_green.svg';
+
   /// List of all assets
-  List<String> get values => [back, dropDown, eyeClose, eyeOpen, intro];
+  List<String> get values =>
+      [addImage, back, dropDown, eyeClose, eyeOpen, intro, userGreen];
 }
 
 class Assets {

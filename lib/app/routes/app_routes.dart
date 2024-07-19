@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:telechat/features/authentication/pages/fill_user_info_page.dart';
 import 'package:telechat/features/authentication/pages/sign_in_page.dart';
 import 'package:telechat/features/authentication/pages/verify_opt_page.dart';
+import 'package:telechat/features/home/pages/home_page.dart';
 import 'package:telechat/features/intro/pages/intro_page.dart';
 
 class AppRoutes {
@@ -29,6 +30,9 @@ class AppRoutes {
 
       case FillUserInfoPage.route:
         return _SlidePageRoute(page: const FillUserInfoPage());
+
+      case HomePage.route:
+        return _SlidePageRoute(page: const HomePage());
 
       default:
         return _errorRoute();

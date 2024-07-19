@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pinput/pinput.dart';
 import 'package:telechat/app/constants/app_const.dart';
 import 'package:telechat/core/extensions/string.dart';
+import 'package:telechat/features/authentication/widgets/auth_body_frame_widget.dart';
 
 import '../../../app/themes/themes.dart';
 import '../../../app/widgets/widgets.dart';
@@ -66,112 +67,92 @@ class _VerifyOTPPageState extends ConsumerState<VerifyOTPPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: UnfocusArea(
-          child: Padding(
-            padding: EdgeInsets.all(24.r),
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Text(
-                          "Enter your OTP",
-                          style: AppTextStyle.headingL,
-                        ),
-                        const Gap.extra(),
-                        Pinput(
-                          controller: otpController,
-                          showCursor: true,
-                          length: 6,
-                          defaultPinTheme: PinTheme(
-                            width: 54.r,
-                            height: 54.r,
-                            textStyle: AppTextStyle.titleS.bold,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey, width: 1.5),
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                          ),
-                          separatorBuilder: (_) => const Gap.small(),
-                          hapticFeedbackType: HapticFeedbackType.mediumImpact,
-                        ),
-                        const Gap.extra(),
-                        ValueListenableBuilder(
-                          valueListenable: timerNotifier,
-                          child: ValueListenableBuilder(
-                            valueListenable: resendNotifier,
-                            builder: (context, bool isResending, _) {
-                              return isResending
-                                  ? const LoadingIndicatorWidget()
-                                  : PrimaryButton.text(
-                                      text: "Resend OTP",
-                                      onPressed: () {
-                                        if (!isResending) {
-                                          resendNotifier.value = true;
-                                          ref.read(authControllerProvider).resendOTP(
-                                                phoneNumber: widget.phoneNumber,
-                                                onCompleted: (id) {
-                                                  resendNotifier.value = false;
-                                                  if (id.isNotNullOrEmpty) {
-                                                    verificationId = id;
-                                                    runCountDownTimer();
-                                                  }
-                                                },
-                                              );
-                                        }
-                                      },
-                                      backgroundColor: AppColors.background,
-                                      textColor: AppColors.primary,
-                                      width: 0,
-                                      height: 40.h,
-                                    );
-                            },
-                          ),
-                          builder: (context, int time, child) {
-                            return time > 0
-                                ? Text(
-                                    "Resend after: ${time}s",
-                                    style: AppTextStyle.bodyS.white,
-                                  )
-                                : child!;
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                //* Button
-                PrimaryButton(
-                  onPressed: () {
-                    if (!confirmNotifier.value) {
-                      confirmNotifier.value = true;
-                      ref.read(authControllerProvider).verifyOTP(
-                            verificationId: verificationId!,
-                            userOTP: otpController.text.trim(),
-                            onCompleted: () => confirmNotifier.value = false,
-                          );
-                    }
-                  },
-                  child: ValueListenableBuilder(
-                    valueListenable: confirmNotifier,
-                    builder: (context, bool isVerifing, _) {
-                      return isVerifing
-                          ? const LoadingIndicatorWidget(
-                              color: AppColors.background,
-                            )
-                          : Text(
-                              "Verify OTP",
-                              style: AppTextStyle.bodyS.bg,
-                            );
-                    },
-                  ),
-                ),
-              ],
+    return AuthBodyFrameWidget(
+      title: "Enter your OTP",
+      body: Column(
+        children: [
+          Pinput(
+            controller: otpController,
+            showCursor: true,
+            length: 6,
+            defaultPinTheme: PinTheme(
+              width: 54.r,
+              height: 54.r,
+              textStyle: AppTextStyle.titleS.bold,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey, width: 1.5),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
             ),
+            separatorBuilder: (_) => const Gap.small(),
+            hapticFeedbackType: HapticFeedbackType.mediumImpact,
           ),
+          const Gap.extra(),
+          ValueListenableBuilder(
+            valueListenable: timerNotifier,
+            child: ValueListenableBuilder(
+              valueListenable: resendNotifier,
+              builder: (context, bool isResending, _) {
+                return isResending
+                    ? const LoadingIndicatorWidget()
+                    : PrimaryButton.text(
+                        text: "Resend OTP",
+                        onPressed: () {
+                          if (!isResending) {
+                            resendNotifier.value = true;
+                            ref.read(authControllerProvider).resendOTP(
+                                  phoneNumber: widget.phoneNumber,
+                                  onCompleted: (id) {
+                                    resendNotifier.value = false;
+                                    if (id.isNotNullOrEmpty) {
+                                      verificationId = id;
+                                      runCountDownTimer();
+                                    }
+                                  },
+                                );
+                          }
+                        },
+                        backgroundColor: AppColors.background,
+                        textColor: AppColors.primary,
+                        width: 0,
+                        height: 40.h,
+                      );
+              },
+            ),
+            builder: (context, int time, child) {
+              return time > 0
+                  ? Text(
+                      "Resend after: ${time}s",
+                      style: AppTextStyle.bodyS.white,
+                    )
+                  : child!;
+            },
+          )
+        ],
+      ),
+      bottom: PrimaryButton(
+        onPressed: () {
+          if (!confirmNotifier.value) {
+            confirmNotifier.value = true;
+            ref.read(authControllerProvider).verifyOTP(
+                  verificationId: verificationId!,
+                  userOTP: otpController.text.trim(),
+                  onCompleted: () => confirmNotifier.value = false,
+                );
+          }
+        },
+        child: ValueListenableBuilder(
+          valueListenable: confirmNotifier,
+          builder: (context, bool isVerifing, _) {
+            return isVerifing
+                ? const LoadingIndicatorWidget(
+                    color: AppColors.background,
+                  )
+                : Text(
+                    "Verify OTP",
+                    style: AppTextStyle.bodyS.bg,
+                  );
+          },
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:telechat/app/constants/app_const.dart';
+import 'package:telechat/app/constants/firebase_const.dart';
 import 'package:telechat/core/error_handler/error_handler.dart';
 
 final authRepositoryProvider = Provider((ref) {
@@ -20,6 +21,21 @@ class AuthRepository {
     required this.auth,
     required this.database,
   });
+
+  User? get currentUser => auth.currentUser;
+
+  FutureEither<void> saveUserDataToDB({
+    required String uid,
+    required Map<String, dynamic> map,
+  }) async {
+    try {
+      return Right(
+        await database.collection(Collections.users).doc(uid).set(map),
+      );
+    } catch (e) {
+      return Left(DatabaseError(message: e.toString()));
+    }
+  }
 
   FutureEither<UserCredential> verifyOTP({
     required String verificationId,

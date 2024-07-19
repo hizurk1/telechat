@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/routes/app_routes.dart';
 import 'package:telechat/app/themes/themes.dart';
+import 'package:telechat/features/authentication/controllers/auth_controller.dart';
+import 'package:telechat/features/authentication/pages/fill_user_info_page.dart';
 import 'package:telechat/features/intro/pages/intro_page.dart';
 
 import 'app/utils/navigator.dart';
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ScreenUtilInit(
       designSize: const Size(393, 827),
       minTextAdapt: true,
@@ -19,9 +22,11 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: AppTheme.appTheme,
-          initialRoute: IntroPage.route,
           onGenerateRoute: AppRoutes.generateRoutes,
           navigatorKey: AppNavigator.navigatorKey,
+          home: ref.watch(authControllerProvider).currentUser != null
+              ? const FillUserInfoPage()
+              : const IntroPage(),
         );
       },
     );
