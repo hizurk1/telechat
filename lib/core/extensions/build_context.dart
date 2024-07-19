@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../app/themes/app_color.dart';
+
 extension BuildContextExtension on BuildContext {
   /// Get screen size of current context
   Size get screenSize => MediaQuery.of(this).size;
@@ -31,6 +33,8 @@ extension BuildContextExtension on BuildContext {
 
   /// Get brightness of current context
   Brightness get brightness => Theme.of(this).brightness;
+
+  ColorFilter get colorFilterBg => const ColorFilter.mode(AppColors.background, BlendMode.srcIn);
 
   /// To show date picker.
   ///

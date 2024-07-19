@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:telechat/app/constants/app_const.dart';
 import 'package:telechat/app/constants/firebase_const.dart';
+import 'package:telechat/core/config/app_log.dart';
 import 'package:telechat/core/error_handler/error_handler.dart';
 
 final authRepositoryProvider = Provider((ref) {
@@ -23,6 +24,16 @@ class AuthRepository {
   });
 
   User? get currentUser => auth.currentUser;
+
+  Future<Map<String, dynamic>?> getUserData() async {
+    try {
+      final userData = await database.collection(Collections.users).doc(currentUser?.uid).get();
+      return userData.data();
+    } catch (e) {
+      logger.e("getUserData: ${e.toString()}");
+      return null;
+    }
+  }
 
   FutureEither<void> saveUserDataToDB({
     required String uid,

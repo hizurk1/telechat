@@ -23,6 +23,11 @@ final authControllerProvider = Provider((ref) {
   return AuthController(authRepository: authRepository, ref: ref);
 });
 
+final userDataProvider = FutureProvider((ref) async {
+  final authController = ref.watch(authControllerProvider);
+  return authController.getUserData();
+});
+
 class AuthController {
   final AuthRepository authRepository;
   final ProviderRef ref;
@@ -33,6 +38,17 @@ class AuthController {
   });
 
   User? get currentUser => authRepository.currentUser;
+
+  //* Get user data
+  Future<UserModel?> getUserData() async {
+    final userData = await authRepository.getUserData();
+
+    UserModel? userModel;
+    if (userData != null) {
+      userModel = UserModel.fromMap(userData);
+    }
+    return userModel;
+  }
 
   //* Save user info
 
@@ -66,6 +82,7 @@ class AuthController {
         phoneNumber: currentUser!.phoneNumber!,
         isOnline: true,
         groupIds: const [],
+        contactIds: const [],
       );
 
       final result = await authRepository.saveUserDataToDB(

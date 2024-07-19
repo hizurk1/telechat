@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/routes/app_routes.dart';
 import 'package:telechat/app/themes/themes.dart';
+import 'package:telechat/app/widgets/error_page.dart';
+import 'package:telechat/app/widgets/loading_indicator.dart';
 import 'package:telechat/features/authentication/controllers/auth_controller.dart';
-import 'package:telechat/features/authentication/pages/fill_user_info_page.dart';
+import 'package:telechat/features/home/pages/home_page.dart';
 import 'package:telechat/features/intro/pages/intro_page.dart';
 
 import 'app/utils/navigator.dart';
@@ -24,9 +26,16 @@ class MyApp extends ConsumerWidget {
           theme: AppTheme.appTheme,
           onGenerateRoute: AppRoutes.generateRoutes,
           navigatorKey: AppNavigator.navigatorKey,
-          home: ref.watch(authControllerProvider).currentUser != null
-              ? const FillUserInfoPage()
-              : const IntroPage(),
+          home: ref.watch(userDataProvider).when(
+                data: (user) {
+                  return (user != null) ? const HomePage() : const IntroPage();
+                },
+                error: (_, __) => ErrorPage(
+                  message: "Unable to load your information.",
+                  onRetry: () => ref.invalidate(userDataProvider),
+                ),
+                loading: () => const LoadingIndicatorPage(),
+              ),
         );
       },
     );

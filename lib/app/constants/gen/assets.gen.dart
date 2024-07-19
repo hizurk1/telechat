@@ -10,6 +10,9 @@
 class $AssetsSvgsGen {
   const $AssetsSvgsGen();
 
+  /// File path: assets/svgs/add_chat.svg
+  String get addChat => 'assets/svgs/add_chat.svg';
+
   /// File path: assets/svgs/add_image.svg
   String get addImage => 'assets/svgs/add_image.svg';
 
@@ -33,7 +36,7 @@ class $AssetsSvgsGen {
 
   /// List of all assets
   List<String> get values =>
-      [addImage, back, dropDown, eyeClose, eyeOpen, intro, userGreen];
+      [addChat, addImage, back, dropDown, eyeClose, eyeOpen, intro, userGreen];
 }
 
 class Assets {

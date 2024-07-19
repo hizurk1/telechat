@@ -7,6 +7,7 @@ class UserModel extends Equatable {
   final String profileImage;
   final String phoneNumber;
   final bool isOnline;
+  final List<String> contactIds;
   final List<String> groupIds;
   const UserModel({
     required this.uid,
@@ -14,6 +15,7 @@ class UserModel extends Equatable {
     required this.profileImage,
     required this.phoneNumber,
     required this.isOnline,
+    required this.contactIds,
     required this.groupIds,
   });
 
@@ -23,6 +25,7 @@ class UserModel extends Equatable {
     String? profileImage,
     String? phoneNumber,
     bool? isOnline,
+    List<String>? contactIds,
     List<String>? groupIds,
   }) {
     return UserModel(
@@ -31,6 +34,7 @@ class UserModel extends Equatable {
       profileImage: profileImage ?? this.profileImage,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       isOnline: isOnline ?? this.isOnline,
+      contactIds: contactIds ?? this.contactIds,
       groupIds: groupIds ?? this.groupIds,
     );
   }
@@ -42,6 +46,7 @@ class UserModel extends Equatable {
       'profileImage': profileImage,
       'phoneNumber': phoneNumber,
       'isOnline': isOnline,
+      'contactIds': contactIds,
       'groupIds': groupIds,
     };
   }
@@ -53,10 +58,10 @@ class UserModel extends Equatable {
       profileImage: map['profileImage'] as String,
       phoneNumber: map['phoneNumber'] as String,
       isOnline: map['isOnline'] as bool,
-      groupIds: List<String>.from(map['groupIds']),
+      contactIds: List<String>.from((map['contactIds'])),
+      groupIds: List<String>.from((map['groupIds'])),
     );
   }
-
   @override
   bool get stringify => true;
 
@@ -68,6 +73,7 @@ class UserModel extends Equatable {
       profileImage,
       phoneNumber,
       isOnline,
+      contactIds,
       groupIds,
     ];
   }

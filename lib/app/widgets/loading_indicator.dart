@@ -25,3 +25,19 @@ class LoadingIndicatorWidget extends StatelessWidget {
     );
   }
 }
+
+class LoadingIndicatorPage extends StatelessWidget {
+  const LoadingIndicatorPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: LoadingIndicatorWidget(
+          size: 30,
+          lineWidth: 3,
+        ),
+      ),
+    );
+  }
+}
