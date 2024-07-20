@@ -38,7 +38,7 @@ class HomePage extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            const ChatPage(),
+            const ChatListPage(),
             Container(),
           ],
         ),

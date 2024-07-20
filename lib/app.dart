@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/routes/app_routes.dart';
 import 'package:telechat/app/themes/themes.dart';
 import 'package:telechat/app/widgets/error_page.dart';
-import 'package:telechat/app/widgets/loading_indicator.dart';
 import 'package:telechat/features/authentication/controllers/auth_controller.dart';
 import 'package:telechat/features/home/pages/home_page.dart';
 import 'package:telechat/features/intro/pages/intro_page.dart';
@@ -23,7 +22,6 @@ class MyApp extends ConsumerWidget {
       builder: (context, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          themeMode: ThemeMode.dark,
           theme: AppTheme.appTheme,
           onGenerateRoute: AppRoutes.generateRoutes,
           navigatorKey: AppNavigator.navigatorKey,
@@ -36,7 +34,7 @@ class MyApp extends ConsumerWidget {
                   message: "Unable to load your information.",
                   onRetry: () => ref.refresh(userDataProvider.future),
                 ),
-                loading: () => const LoadingIndicatorPage(),
+                loading: () => const Scaffold(),
               ),
         );
       },

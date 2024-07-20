@@ -1,13 +1,7 @@
-import 'dart:io' show File;
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:telechat/app/common/models/user_model.dart';
-import 'package:telechat/app/common/repositories/cloud_storage.dart';
-import 'package:telechat/app/constants/app_const.dart';
 import 'package:telechat/app/utils/navigator.dart';
 import 'package:telechat/app/utils/util_function.dart';
 import 'package:telechat/core/config/app_log.dart';
@@ -15,17 +9,18 @@ import 'package:telechat/core/extensions/string.dart';
 import 'package:telechat/features/authentication/pages/fill_user_info_page.dart';
 import 'package:telechat/features/authentication/repository/auth_repository.dart';
 import 'package:telechat/features/home/pages/home_page.dart';
+import 'package:telechat/shared/controllers/user_controller.dart';
 
 import '../pages/verify_opt_page.dart';
 
 final authControllerProvider = Provider((ref) {
-  final authRepository = ref.watch(authRepositoryProvider);
+  final authRepository = ref.read(authRepositoryProvider);
   return AuthController(authRepository: authRepository, ref: ref);
 });
 
 final userDataProvider = FutureProvider((ref) async {
-  final authController = ref.watch(authControllerProvider);
-  return authController.getUserData();
+  final userController = ref.watch(userControllerProvider);
+  return userController.getUserData();
 });
 
 class AuthController {
@@ -36,71 +31,6 @@ class AuthController {
     required this.authRepository,
     required this.ref,
   });
-
-  User? get currentUser => authRepository.currentUser;
-
-  //* Get user data
-  Future<UserModel?> getUserData() async {
-    final userData = await authRepository.getUserData();
-
-    UserModel? userModel;
-    if (userData != null) {
-      userModel = UserModel.fromMap(userData);
-    }
-    return userModel;
-  }
-
-  //* Save user info
-
-  Future<void> saveUserDataToDB({
-    required String name,
-    required File? profileImg,
-  }) async {
-    if (name.isEmpty) {
-      AppNavigator.showMessage(
-        "Please enter your name",
-        type: SnackbarType.error,
-      );
-      return;
-    }
-
-    try {
-      final uid = currentUser!.uid;
-      String photoUrl = AppConst.defaultUserProfilePicUrl;
-
-      if (profileImg != null) {
-        final url = await ref
-            .read(cloudStorageServiceProvider)
-            .storeUserProfileImage(uid: uid, file: profileImg);
-        if (url != null) photoUrl = url;
-      }
-
-      final userModel = UserModel(
-        uid: uid,
-        name: name,
-        profileImage: photoUrl,
-        phoneNumber: currentUser!.phoneNumber!,
-        isOnline: true,
-        contactIds: const [],
-        blockedIds: const [],
-        groupIds: const [],
-      );
-
-      final result = await authRepository.saveUserDataToDB(
-        uid: uid,
-        map: userModel.toMap(),
-      );
-      result.fold(
-        (err) => logger.e("saveUserDataToDB: ${err.message}"),
-        (_) {
-          logger.i("saveUserDataToDB: ${userModel.toString()}");
-          AppNavigator.pushNamedAndRemoveUntil(HomePage.route);
-        },
-      );
-    } catch (e) {
-      logger.e("saveUserDataToDB: ${e.toString()}");
-    }
-  }
 
   //* Verify OTP
 

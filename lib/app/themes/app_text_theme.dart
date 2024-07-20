@@ -23,50 +23,56 @@ extension TextStyleExt on TextStyle {
 class AppTextStyle {
   AppTextStyle._();
 
+  static const TextStyle defaultText = TextStyle(
+    color: AppColors.white,
+    fontFamily: "Poppin",
+    fontWeight: FontWeight.normal,
+  );
+
   //! Header
   /// fontSize: 36 [bold]
-  static final TextStyle headingXL = TextStyle(fontSize: 36.sp).bold;
+  static final TextStyle headingXL = defaultText.copyWith(fontSize: 36.sp).bold;
 
   /// fontSize: 34 [bold]
-  static final TextStyle headingL = TextStyle(fontSize: 34.sp).bold;
+  static final TextStyle headingL = defaultText.copyWith(fontSize: 34.sp).bold;
 
   /// fontSize: 32 [w500]
-  static final TextStyle headingM = TextStyle(fontSize: 32.sp).medium;
+  static final TextStyle headingM = defaultText.copyWith(fontSize: 32.sp).medium;
 
   /// fontSize: 30 [normal]
-  static final TextStyle headingS = TextStyle(fontSize: 30.sp).normal;
+  static final TextStyle headingS = defaultText.copyWith(fontSize: 30.sp);
 
   //! Title
   /// fontSize: 28 [bold]
-  static final TextStyle titleL = TextStyle(fontSize: 28.sp).bold;
+  static final TextStyle titleL = defaultText.copyWith(fontSize: 28.sp).bold;
 
   /// fontSize: 24 [w500]
-  static final TextStyle titleM = TextStyle(fontSize: 24.sp).medium;
+  static final TextStyle titleM = defaultText.copyWith(fontSize: 24.sp).medium;
 
   /// fontSize: 20 [normal]
-  static final TextStyle titleS = TextStyle(fontSize: 20.sp).normal;
+  static final TextStyle titleS = defaultText.copyWith(fontSize: 20.sp);
 
   //! Body
   /// fontSize: 18 [normal]
-  static final TextStyle bodyL = TextStyle(fontSize: 18.sp).normal;
+  static final TextStyle bodyL = defaultText.copyWith(fontSize: 18.sp);
 
   /// fontSize: 16 [normal]
-  static final TextStyle bodyM = TextStyle(fontSize: 16.sp).normal;
+  static final TextStyle bodyM = defaultText.copyWith(fontSize: 16.sp);
 
   /// fontSize: 14 [normal]
-  static final TextStyle bodyS = TextStyle(fontSize: 14.sp).normal;
+  static final TextStyle bodyS = defaultText.copyWith(fontSize: 14.sp);
 
   //! Caption
   /// fontSize: 13 [w300]
-  static final TextStyle caption = TextStyle(fontSize: 13.sp).normal;
+  static final TextStyle caption = defaultText.copyWith(fontSize: 13.sp);
 
   //! Label
   /// fontSize: 12 [bold]
-  static final TextStyle labelL = TextStyle(fontSize: 12.sp).normal;
+  static final TextStyle labelL = defaultText.copyWith(fontSize: 12.sp);
 
   /// fontSize: 11 [w500]
-  static final TextStyle labelM = TextStyle(fontSize: 11.sp).medium;
+  static final TextStyle labelM = defaultText.copyWith(fontSize: 11.sp).medium;
 
   /// fontSize: 10 [normal]
-  static final TextStyle labelS = TextStyle(fontSize: 10.sp).normal;
+  static final TextStyle labelS = defaultText.copyWith(fontSize: 10.sp);
 }

@@ -3,8 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:telechat/app/themes/themes.dart';
 
-import '../../core/extensions/build_context.dart';
-
 class BorderTextField extends StatelessWidget {
   BorderTextField({
     super.key,
@@ -106,7 +104,7 @@ class BorderTextField extends StatelessWidget {
               obscureText: isPasswordField ? !value : false,
               keyboardType: inputType,
               cursorWidth: 2,
-              cursorColor: context.textTheme.bodyMedium?.color,
+              cursorColor: AppColors.primary,
               textAlignVertical: isPasswordField ? TextAlignVertical.center : TextAlignVertical.top,
             );
           }),

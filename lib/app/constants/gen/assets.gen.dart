@@ -56,6 +56,9 @@ class $AssetsSvgsGen {
   /// File path: assets/svgs/add_image.svg
   SvgGenImage get addImage => const SvgGenImage('assets/svgs/add_image.svg');
 
+  /// File path: assets/svgs/add_person.svg
+  SvgGenImage get addPerson => const SvgGenImage('assets/svgs/add_person.svg');
+
   /// File path: assets/svgs/back.svg
   SvgGenImage get back => const SvgGenImage('assets/svgs/back.svg');
 
@@ -75,8 +78,17 @@ class $AssetsSvgsGen {
   SvgGenImage get userGreen => const SvgGenImage('assets/svgs/user_green.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values =>
-      [addChat, addImage, back, dropDown, eyeClose, eyeOpen, intro, userGreen];
+  List<SvgGenImage> get values => [
+        addChat,
+        addImage,
+        addPerson,
+        back,
+        dropDown,
+        eyeClose,
+        eyeOpen,
+        intro,
+        userGreen
+      ];
 }
 
 class Assets {

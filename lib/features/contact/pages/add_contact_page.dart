@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:telechat/app/themes/app_color.dart';
+import 'package:telechat/app/widgets/no_border_text_field.dart';
 
 class AddContactPage extends StatefulWidget {
   static const String route = "/add-contact";
@@ -9,17 +11,28 @@ class AddContactPage extends StatefulWidget {
 }
 
 class _AddContactPageState extends State<AddContactPage> {
+  final searchController = TextEditingController();
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-        title: const Expanded(
-          child: TextField(),
+        iconTheme: const IconThemeData(color: AppColors.white),
+        title: NoBorderTextField(
+          controller: searchController,
+          hintText: "Search for your contacts",
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 3),
+            padding: const EdgeInsets.only(right: 5),
             child: IconButton(
               onPressed: () {},
               icon: const Icon(Icons.search_rounded, color: Colors.white),

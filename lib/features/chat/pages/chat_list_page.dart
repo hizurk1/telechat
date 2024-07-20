@@ -6,14 +6,14 @@ import 'package:telechat/app/themes/app_color.dart';
 import 'package:telechat/core/extensions/build_context.dart';
 import 'package:telechat/features/contact/pages/select_contact_page.dart';
 
-class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+class ChatListPage extends StatefulWidget {
+  const ChatListPage({super.key});
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  State<ChatListPage> createState() => _ChatListPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ChatListPageState extends State<ChatListPage> {
   final _scrollController = ScrollController();
   final visibleFab = ValueNotifier(true);
 

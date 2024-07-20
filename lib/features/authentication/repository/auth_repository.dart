@@ -2,9 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:telechat/app/constants/app_const.dart';
-import 'package:telechat/app/constants/firebase_const.dart';
-import 'package:telechat/core/config/app_log.dart';
+import 'package:telechat/app/configs/remote_config.dart';
 import 'package:telechat/core/error_handler/error_handler.dart';
 
 final authRepositoryProvider = Provider((ref) {
@@ -22,31 +20,6 @@ class AuthRepository {
     required this.auth,
     required this.database,
   });
-
-  User? get currentUser => auth.currentUser;
-
-  Future<Map<String, dynamic>?> getUserData() async {
-    try {
-      final userData = await database.collection(Collections.users).doc(currentUser?.uid).get();
-      return userData.data();
-    } catch (e) {
-      logger.e("getUserData: ${e.toString()}");
-      return null;
-    }
-  }
-
-  FutureEither<void> saveUserDataToDB({
-    required String uid,
-    required Map<String, dynamic> map,
-  }) async {
-    try {
-      return Right(
-        await database.collection(Collections.users).doc(uid).set(map),
-      );
-    } catch (e) {
-      return Left(DatabaseError(message: e.toString()));
-    }
-  }
 
   FutureEither<UserCredential> verifyOTP({
     required String verificationId,
@@ -82,7 +55,7 @@ class AuthRepository {
           throw AuthenticationError(message: e.message ?? '');
         },
         codeSent: codeSent,
-        timeout: const Duration(seconds: AppConst.otpTimeOutInSeconds),
+        timeout: Duration(seconds: RemoteConfig.otpTimeOutInSeconds),
         codeAutoRetrievalTimeout: timeOut,
       );
     } on FirebaseAuthException catch (e) {

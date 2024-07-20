@@ -3,17 +3,18 @@ import 'dart:io' show File;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:telechat/app/constants/app_const.dart';
+import 'package:telechat/app/configs/remote_config.dart';
 import 'package:telechat/app/constants/gen/assets.gen.dart';
 import 'package:telechat/app/themes/app_color.dart';
 import 'package:telechat/app/themes/app_text_theme.dart';
 import 'package:telechat/app/utils/util_function.dart';
 import 'package:telechat/app/widgets/border_text_field.dart';
+import 'package:telechat/app/widgets/cached_network_image.dart';
 import 'package:telechat/app/widgets/gap.dart';
 import 'package:telechat/app/widgets/loading_indicator.dart';
 import 'package:telechat/app/widgets/primary_button.dart';
-import 'package:telechat/features/authentication/controllers/auth_controller.dart';
 import 'package:telechat/features/authentication/widgets/auth_body_frame_widget.dart';
+import 'package:telechat/shared/controllers/user_controller.dart';
 
 class FillUserInfoPage extends ConsumerStatefulWidget {
   static const String route = "/fill-user-info";
@@ -54,7 +55,10 @@ class _FillUserInfoPageState extends ConsumerState<FillUserInfoPage> {
                 child: SizedBox.square(
                   dimension: 100.r,
                   child: image == null
-                      ? Image.network(AppConst.defaultUserProfilePicUrl)
+                      ? CachedNetworkImageCustom.avatar(
+                          imageUrl: RemoteConfig.defaultUserProfilePicUrl,
+                          size: 100,
+                        )
                       : Image.file(image!),
                 ),
               ),
@@ -86,7 +90,7 @@ class _FillUserInfoPageState extends ConsumerState<FillUserInfoPage> {
         onPressed: () async {
           if (!confirmNotifier.value) {
             confirmNotifier.value = true;
-            await ref.read(authControllerProvider).saveUserDataToDB(
+            await ref.read(userControllerProvider).saveUserDataToDB(
                   name: nameController.text.trim(),
                   profileImg: image,
                 );

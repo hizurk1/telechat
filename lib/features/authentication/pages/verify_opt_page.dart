@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pinput/pinput.dart';
-import 'package:telechat/app/constants/app_const.dart';
+import 'package:telechat/app/configs/remote_config.dart';
 import 'package:telechat/core/extensions/string.dart';
 import 'package:telechat/features/authentication/widgets/auth_body_frame_widget.dart';
 
@@ -31,7 +31,7 @@ class _VerifyOTPPageState extends ConsumerState<VerifyOTPPage> {
   final otpController = TextEditingController();
   final ValueNotifier<bool> confirmNotifier = ValueNotifier(false);
   final ValueNotifier<bool> resendNotifier = ValueNotifier(false);
-  final ValueNotifier<int> timerNotifier = ValueNotifier(AppConst.otpTimeOutInSeconds);
+  final ValueNotifier<int> timerNotifier = ValueNotifier(RemoteConfig.otpTimeOutInSeconds);
   Timer? _timer;
   String? verificationId;
 
@@ -43,7 +43,7 @@ class _VerifyOTPPageState extends ConsumerState<VerifyOTPPage> {
   }
 
   void runCountDownTimer() {
-    timerNotifier.value = AppConst.otpTimeOutInSeconds;
+    timerNotifier.value = RemoteConfig.otpTimeOutInSeconds;
     _timer ??= Timer.periodic(
       const Duration(seconds: 1),
       (_) {

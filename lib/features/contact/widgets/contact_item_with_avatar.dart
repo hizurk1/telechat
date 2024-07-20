@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/themes/app_color.dart';
 import 'package:telechat/app/themes/app_text_theme.dart';
+import 'package:telechat/app/widgets/cached_network_image.dart';
 
 class ContactItemWithAvatarWidget extends StatelessWidget {
   const ContactItemWithAvatarWidget({
@@ -23,13 +24,13 @@ class ContactItemWithAvatarWidget extends StatelessWidget {
       onTap: onTap,
       splashColor: AppColors.buttonGrey,
       hoverColor: AppColors.buttonGrey,
-      tileColor: AppColors.appBarBg,
+      tileColor: AppColors.card,
       minTileHeight: 58.h,
       leading: imageUrl != null
-          ? Image.network(
-              imageUrl!,
-              height: 42.r,
-              width: 42.r,
+          ? CachedNetworkImageCustom.avatar(
+              imageUrl: imageUrl!,
+              size: 42,
+              loadingIndicatorSize: 0,
             )
           : null,
       title: Text(
@@ -38,7 +39,7 @@ class ContactItemWithAvatarWidget extends StatelessWidget {
       ),
       subtitle: subText.isNotEmpty
           ? Text(
-              name,
+              subText,
               style: AppTextStyle.labelM.dark.medium,
             )
           : null,
