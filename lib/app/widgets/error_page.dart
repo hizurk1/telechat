@@ -9,12 +9,12 @@ import 'package:telechat/app/widgets/primary_button.dart';
 class ErrorPage extends StatelessWidget {
   const ErrorPage({
     super.key,
-    required this.onRetry,
+    this.onRetry,
     this.message,
   });
 
   final String? message;
-  final VoidCallback onRetry;
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +30,13 @@ class ErrorPage extends StatelessWidget {
                 width: 200.r,
               ),
               Text(
-                message ?? "Something went wrong! Please try again.",
-                style: AppTextStyle.bodyL.white,
+                message ?? "Something went wrong! \nPlease try again.",
+                style: AppTextStyle.bodyL.sub,
+                textAlign: TextAlign.center,
               ),
               const Gap.extra(),
               PrimaryButton(
-                onPressed: () {},
+                onPressed: () => onRetry?.call(),
                 width: 0,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -47,6 +48,7 @@ class ErrorPage extends StatelessWidget {
                   ],
                 ),
               ),
+              const Gap.extra(),
             ],
           ),
         ),

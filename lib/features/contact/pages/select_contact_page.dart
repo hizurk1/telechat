@@ -95,7 +95,7 @@ class _SelectContactPageState extends ConsumerState<SelectContactPage> {
                   separatorBuilder: (context, index) => const Gap(1),
                   itemBuilder: (context, index) {
                     final contact = state.searchList[index];
-                    return ContactItemWithAvatarWidget(
+                    return ContactItemWidget(
                       onTap: () {
                         debugPrint(contact.name);
                       },
@@ -112,7 +112,13 @@ class _SelectContactPageState extends ConsumerState<SelectContactPage> {
         floatingActionButton: ValueListenableBuilder(
           valueListenable: visibleFab,
           child: FloatingActionButton(
-            onPressed: () => Navigator.pushNamed(context, AddContactPage.route),
+            onPressed: () async {
+              final onBackResult =
+                  await Navigator.pushNamed(context, AddContactPage.route) as bool?;
+              if (onBackResult != null && onBackResult) {
+                ref.read(contactControllerProvider.notifier).fetchContacts();
+              }
+            },
             shape: const CircleBorder(),
             backgroundColor: AppColors.primary,
             child: Assets.svgs.addPerson.svg(

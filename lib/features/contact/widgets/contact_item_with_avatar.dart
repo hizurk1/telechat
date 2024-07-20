@@ -4,8 +4,8 @@ import 'package:telechat/app/themes/app_color.dart';
 import 'package:telechat/app/themes/app_text_theme.dart';
 import 'package:telechat/app/widgets/cached_network_image.dart';
 
-class ContactItemWithAvatarWidget extends StatelessWidget {
-  const ContactItemWithAvatarWidget({
+class ContactItemWidget extends StatelessWidget {
+  const ContactItemWidget({
     super.key,
     required this.onTap,
     required this.name,

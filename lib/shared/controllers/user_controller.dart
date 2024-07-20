@@ -31,7 +31,7 @@ class UserController {
 
   //* Get user data
   Future<UserModel?> getUserData() async {
-    final userData = await userRepository.getUserData();
+    final userData = await userRepository.getUserDataFromDB();
 
     UserModel? userModel;
     if (userData != null) {
@@ -40,9 +40,21 @@ class UserController {
     return userModel;
   }
 
+  //* Update user info
+
+  Future<void> updateUserData({
+    required Map<String, dynamic> map,
+  }) async {
+    try {
+      await userRepository.updateUserDataToDB(map: map);
+    } catch (e) {
+      logger.e("updateUserData: ${e.toString()}");
+    }
+  }
+
   //* Save user info
 
-  Future<void> saveUserDataToDB({
+  Future<void> saveUserData({
     required String name,
     required File? profileImg,
   }) async {
@@ -81,14 +93,14 @@ class UserController {
         map: userModel.toMap(),
       );
       result.fold(
-        (err) => logger.e("saveUserDataToDB: ${err.message}"),
+        (err) => logger.e(err.message),
         (_) {
-          logger.i("saveUserDataToDB: ${userModel.toString()}");
+          logger.i("saveUserData: ${userModel.toString()}");
           AppNavigator.pushNamedAndRemoveUntil(HomePage.route);
         },
       );
     } catch (e) {
-      logger.e("saveUserDataToDB: ${e.toString()}");
+      logger.e("saveUserData: ${e.toString()}");
     }
   }
 }

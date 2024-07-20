@@ -5,7 +5,8 @@ import 'package:telechat/features/contact/repository/contact_repository.dart';
 import 'package:telechat/shared/models/user_model.dart';
 import 'package:telechat/shared/repositories/user_repository.dart';
 
-final contactControllerProvider = StateNotifierProvider<ContactController, ContactState>((ref) {
+final contactControllerProvider =
+    StateNotifierProvider.autoDispose<ContactController, ContactState>((ref) {
   final contactRepository = ref.read(contactRepositoryProvider);
   final userRepository = ref.read(userRepositoryProvider);
   return ContactController(
@@ -44,7 +45,7 @@ class ContactController extends StateNotifier<ContactState> {
   Future<void> fetchContacts() async {
     try {
       state = state.copyWith(status: ContactStatus.loading);
-      final userMap = await userRepository.getUserData();
+      final userMap = await userRepository.getUserDataFromDB();
       if (userMap != null) {
         final userModel = UserModel.fromMap(userMap);
 

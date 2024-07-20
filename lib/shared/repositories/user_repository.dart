@@ -25,13 +25,37 @@ class UserRepository {
 
   User? get currentUser => auth.currentUser;
 
-  Future<Map<String, dynamic>?> getUserData() async {
+  Future<bool> addContactForUserToDB({
+    required String contactUid,
+  }) async {
+    try {
+      await database.collection(Collections.users).doc(currentUser?.uid).update({
+        "contactIds": FieldValue.arrayUnion([contactUid]),
+      });
+      return true;
+    } catch (e) {
+      logger.e("addContactForUserToDB: ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getUserDataFromDB() async {
     try {
       final userData = await database.collection(Collections.users).doc(currentUser?.uid).get();
       return userData.data();
     } catch (e) {
-      logger.e("getUserData: ${e.toString()}");
+      logger.e("getUserDataFromDB: ${e.toString()}");
       return null;
+    }
+  }
+
+  Future<void> updateUserDataToDB({
+    required Map<String, dynamic> map,
+  }) async {
+    try {
+      await database.collection(Collections.users).doc(currentUser?.uid).update(map);
+    } catch (e) {
+      logger.e("updateUserDataToDB: ${e.toString()}");
     }
   }
 
@@ -44,7 +68,7 @@ class UserRepository {
         await database.collection(Collections.users).doc(uid).set(map),
       );
     } catch (e) {
-      return Left(DatabaseError(message: e.toString()));
+      return Left(DatabaseError(message: "saveUserDataToDB: ${e.toString()}"));
     }
   }
 }

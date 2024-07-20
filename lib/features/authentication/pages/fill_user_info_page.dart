@@ -90,7 +90,7 @@ class _FillUserInfoPageState extends ConsumerState<FillUserInfoPage> {
         onPressed: () async {
           if (!confirmNotifier.value) {
             confirmNotifier.value = true;
-            await ref.read(userControllerProvider).saveUserDataToDB(
+            await ref.read(userControllerProvider).saveUserData(
                   name: nameController.text.trim(),
                   profileImg: image,
                 );

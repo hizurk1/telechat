@@ -28,6 +28,11 @@ extension StringNullExt on String? {
 }
 
 extension StringExtension on String {
+  bool get isNumeric {
+    final RegExp numericRegExp = RegExp(r'^[-+]?[0-9]+$');
+    return numericRegExp.hasMatch(this);
+  }
+
   /// Short of `replaceAll(r'\n', '\n')`
   String get fixBreakLine => replaceAll(r'\n', '\n');
 

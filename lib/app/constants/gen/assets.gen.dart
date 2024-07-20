@@ -39,12 +39,16 @@ class $AssetsJsonsGen {
   /// File path: assets/jsons/empty.json
   LottieGenImage get empty => const LottieGenImage('assets/jsons/empty.json');
 
+  /// File path: assets/jsons/notFound.json
+  LottieGenImage get notFound =>
+      const LottieGenImage('assets/jsons/notFound.json');
+
   /// File path: assets/jsons/page404.json
   LottieGenImage get page404 =>
       const LottieGenImage('assets/jsons/page404.json');
 
   /// List of all assets
-  List<LottieGenImage> get values => [catError, empty, page404];
+  List<LottieGenImage> get values => [catError, empty, notFound, page404];
 }
 
 class $AssetsSvgsGen {

@@ -6,12 +6,14 @@ class NoBorderTextField extends StatelessWidget {
     super.key,
     required this.controller,
     required this.hintText,
+    this.autofocus = false,
     this.onChanged,
     this.onSubmitted,
   });
 
   final TextEditingController controller;
   final String hintText;
+  final bool autofocus;
   final void Function(String text)? onChanged;
   final void Function(String text)? onSubmitted;
 
@@ -22,6 +24,7 @@ class NoBorderTextField extends StatelessWidget {
       onChanged: onChanged,
       onSubmitted: onSubmitted,
       style: AppTextStyle.bodyM.white,
+      autofocus: autofocus,
       decoration: InputDecoration(
         isDense: true,
         border: InputBorder.none,
