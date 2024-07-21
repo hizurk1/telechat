@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/constants/gen/assets.gen.dart';
 import 'package:telechat/app/themes/app_color.dart';
+import 'package:telechat/app/themes/app_text_theme.dart';
 import 'package:telechat/app/widgets/error_page.dart';
 import 'package:telechat/app/widgets/gap.dart';
 import 'package:telechat/app/widgets/no_border_text_field.dart';
@@ -27,7 +28,9 @@ class SelectContactPage extends ConsumerStatefulWidget {
 class _SelectContactPageState extends ConsumerState<SelectContactPage> {
   final searchController = TextEditingController();
   final _scrollController = ScrollController();
+  final _focusNode = FocusNode();
   final visibleFab = ValueNotifier(true);
+  final visibleSearchBar = ValueNotifier(false);
 
   @override
   void initState() {
@@ -49,6 +52,7 @@ class _SelectContactPageState extends ConsumerState<SelectContactPage> {
   void dispose() {
     _scrollController.dispose();
     searchController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -56,31 +60,57 @@ class _SelectContactPageState extends ConsumerState<SelectContactPage> {
   Widget build(BuildContext context) {
     final state = ref.watch(contactControllerProvider);
     return UnfocusArea(
+      onUnfocus: () => visibleSearchBar.value = false,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           iconTheme: const IconThemeData(color: AppColors.white),
-          title: NoBorderTextField(
-            controller: searchController,
-            onChanged: (text) => ref
-                .read(contactControllerProvider.notifier)
-                .searchForYourContactsByNameOrPhone(keyword: text.trim()),
-            onSubmitted: (text) => ref
-                .read(contactControllerProvider.notifier)
-                .searchForYourContactsByNameOrPhone(keyword: text.trim()),
-            hintText: "Search by name or phone",
+          title: ValueListenableBuilder(
+            valueListenable: visibleSearchBar,
+            child: NoBorderTextField(
+              controller: searchController,
+              focusNode: _focusNode,
+              onChanged: (text) => ref
+                  .read(contactControllerProvider.notifier)
+                  .searchForYourContactsByNameOrPhone(keyword: text.trim()),
+              onSubmitted: (text) => ref
+                  .read(contactControllerProvider.notifier)
+                  .searchForYourContactsByNameOrPhone(keyword: text.trim()),
+              hintText: "Search by name or phone",
+            ),
+            builder: (context, bool isShowSearch, child) {
+              return isShowSearch
+                  ? child!
+                  : Text("Select contact", style: AppTextStyle.bodyL.white);
+            },
           ),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 5),
-              child: IconButton(
-                onPressed: () {
-                  searchController.clear();
-                  ref
-                      .read(contactControllerProvider.notifier)
-                      .searchForYourContactsByNameOrPhone(keyword: "");
+              child: ValueListenableBuilder(
+                valueListenable: visibleSearchBar,
+                child: IconButton(
+                  onPressed: () {
+                    searchController.clear();
+                    ref
+                        .read(contactControllerProvider.notifier)
+                        .searchForYourContactsByNameOrPhone(keyword: "");
+                  },
+                  icon: const Icon(Icons.close_rounded, color: Colors.white),
+                  tooltip: "Clear",
+                ),
+                builder: (context, bool isShowSearch, child) {
+                  return isShowSearch
+                      ? child!
+                      : IconButton(
+                          onPressed: () {
+                            visibleSearchBar.value = true;
+                            _focusNode.requestFocus();
+                          },
+                          icon: const Icon(Icons.search_rounded, color: Colors.white),
+                          tooltip: "Search",
+                        );
                 },
-                icon: const Icon(Icons.close_rounded, color: Colors.white),
-                tooltip: "Clear",
               ),
             ),
           ],

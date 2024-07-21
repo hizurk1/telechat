@@ -7,15 +7,17 @@ class UnfocusArea extends StatelessWidget {
     super.key,
     required this.child,
     this.color,
+    this.onUnfocus,
   });
 
   final Widget child;
   final Color? color;
+  final VoidCallback? onUnfocus;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => UtilsFunction.unfocusTextField(),
+      onTap: () => UtilsFunction.unfocusTextField(onUnfocus),
       child: Container(
         color: color ?? Colors.transparent,
         child: child,
