@@ -51,7 +51,11 @@ class AppRoutes {
         return _SlidePageRoute(page: const AddContactPage());
 
       case ChatPage.route:
-        return _SlidePageRoute(page: ChatPage(contact: args!['contact']));
+        return _SlidePageRoute(
+          page: ChatPage(
+            contactId: args!['contactId'],
+          ),
+        );
 
       default:
         return _errorRoute();

@@ -9,6 +9,7 @@ class AppColors {
   // static const Color card = Color(0xFF2a2a2a);
   static const Color background = Color(0xFF16191D);
   static const Color card = Color(0xFF23272e);
+  static const Color cardMessage = Color(0xFF1e2227);
 
   static const Color blue = Colors.blue;
   static const Color lightBlue = Color(0xFF5685D0);

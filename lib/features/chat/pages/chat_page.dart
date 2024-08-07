@@ -4,16 +4,15 @@ import 'package:telechat/app/themes/themes.dart';
 import 'package:telechat/app/widgets/unfocus.dart';
 import 'package:telechat/features/chat/widgets/chat_board/chat_board_bottom_input.dart';
 import 'package:telechat/features/chat/widgets/chat_board/chat_board_title.dart';
-import 'package:telechat/shared/models/user_model.dart';
 
 class ChatPage extends StatefulWidget {
   static const String route = "/chat";
   const ChatPage({
     super.key,
-    required this.contact,
+    required this.contactId,
   });
 
-  final UserModel contact;
+  final String contactId;
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -28,7 +27,7 @@ class _ChatPageState extends State<ChatPage> {
           iconTheme: const IconThemeData(color: AppColors.white),
           automaticallyImplyLeading: true,
           titleSpacing: 10.w,
-          title: ChatBoardTitleWidget(contactId: widget.contact.uid),
+          title: ChatBoardTitleWidget(contactId: widget.contactId),
           actions: [
             IconButton(
               onPressed: () {},
@@ -46,7 +45,7 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ],
         ),
-        bottomSheet: ChatPageBottomInputWidget(receiverId: widget.contact.uid),
+        bottomSheet: ChatPageBottomInputWidget(receiverId: widget.contactId),
       ),
     );
   }

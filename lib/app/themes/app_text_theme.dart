@@ -75,4 +75,7 @@ class AppTextStyle {
 
   /// fontSize: 10 [normal]
   static final TextStyle labelS = defaultText.copyWith(fontSize: 10.sp);
+
+  /// fontSize: 10 [normal]
+  static final TextStyle labelXS = defaultText.copyWith(fontSize: 9.sp);
 }

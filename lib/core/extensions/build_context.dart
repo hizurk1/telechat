@@ -35,6 +35,8 @@ extension BuildContextExtension on BuildContext {
   Brightness get brightness => Theme.of(this).brightness;
 
   ColorFilter get colorFilterBg => const ColorFilter.mode(AppColors.background, BlendMode.srcIn);
+  
+  ColorFilter colorFilter(Color color) => ColorFilter.mode(color, BlendMode.srcIn);
 
   /// To show date picker.
   ///

@@ -16,7 +16,7 @@ class FadedListWidget extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [Colors.black, Colors.transparent],
-          stops: [0.0, 0.5],
+          stops: [0.0, 1.0],
         ).createShader(bounds);
       },
       blendMode: BlendMode.dstIn,

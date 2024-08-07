@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:telechat/app/constants/firebase_const.dart';
 import 'package:telechat/core/config/app_log.dart';
@@ -11,18 +12,32 @@ import 'package:uuid/uuid.dart';
 final chatRepositoryProvider = Provider((ref) {
   return ChatRepository(
     database: FirebaseFirestore.instance,
+    auth: FirebaseAuth.instance,
     ref: ref,
   );
 });
 
 class ChatRepository {
   final FirebaseFirestore database;
+  final FirebaseAuth auth;
   final ProviderRef ref;
 
   const ChatRepository({
     required this.database,
+    required this.auth,
     required this.ref,
   });
+
+  Stream<List<Map<String, dynamic>>> getListOfChatContacts() {
+    return database
+        .collection(Collections.users)
+        .doc(auth.currentUser?.uid)
+        .collection(Collections.chats)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
+        );
+  }
 
   Future<void> sendMessageAsText({
     required String textMessage,

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:telechat/core/config/app_log.dart';
+import 'package:telechat/features/chat/models/chat_contact_model.dart';
 import 'package:telechat/features/chat/repository/chat_repository.dart';
 import 'package:telechat/shared/controllers/user_controller.dart';
 import 'package:telechat/shared/models/user_model.dart';
@@ -21,6 +22,12 @@ class ChatController {
     required this.chatRepository,
     required this.ref,
   });
+
+  Stream<List<ChatContactModel>> getListOfChatContacts() {
+    return chatRepository.getListOfChatContacts().map((listOfMaps) {
+      return listOfMaps.map((map) => ChatContactModel.fromMap(map)).toList();
+    });
+  }
 
   Future<void> sendMessageAsText({
     required String receiverId,

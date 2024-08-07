@@ -63,6 +63,10 @@ class $AssetsSvgsGen {
   /// File path: assets/svgs/add_person.svg
   SvgGenImage get addPerson => const SvgGenImage('assets/svgs/add_person.svg');
 
+  /// File path: assets/svgs/arrow_dash_line.svg
+  SvgGenImage get arrowDashLine =>
+      const SvgGenImage('assets/svgs/arrow_dash_line.svg');
+
   /// File path: assets/svgs/back.svg
   SvgGenImage get back => const SvgGenImage('assets/svgs/back.svg');
 
@@ -86,6 +90,7 @@ class $AssetsSvgsGen {
         addChat,
         addImage,
         addPerson,
+        arrowDashLine,
         back,
         dropDown,
         eyeClose,
