@@ -34,8 +34,26 @@ class UserRepository {
       });
       return true;
     } catch (e) {
-      logger.e("addContactForUserToDB: ${e.toString()}");
+      logger.e(e.toString());
       return false;
+    }
+  }
+
+  Stream<Map<String, dynamic>?> getUserContactAsStreamFromDB(String contactId) {
+    return database
+        .collection(Collections.users)
+        .doc(contactId)
+        .snapshots()
+        .map((event) => event.data());
+  }
+
+  Future<Map<String, dynamic>?> getUserDataByIdFromDB(String userId) async {
+    try {
+      final userData = await database.collection(Collections.users).doc(userId).get();
+      return userData.data();
+    } catch (e) {
+      logger.e(e.toString());
+      return null;
     }
   }
 
@@ -44,7 +62,7 @@ class UserRepository {
       final userData = await database.collection(Collections.users).doc(currentUser?.uid).get();
       return userData.data();
     } catch (e) {
-      logger.e("getUserDataFromDB: ${e.toString()}");
+      logger.e(e.toString());
       return null;
     }
   }
@@ -55,7 +73,7 @@ class UserRepository {
     try {
       await database.collection(Collections.users).doc(currentUser?.uid).update(map);
     } catch (e) {
-      logger.e("updateUserDataToDB: ${e.toString()}");
+      logger.e(e.toString());
     }
   }
 
@@ -68,7 +86,7 @@ class UserRepository {
         await database.collection(Collections.users).doc(uid).set(map),
       );
     } catch (e) {
-      return Left(DatabaseError(message: "saveUserDataToDB: ${e.toString()}"));
+      return Left(DatabaseError(message: e.toString()));
     }
   }
 }

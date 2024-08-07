@@ -14,6 +14,7 @@ class LoadingContactWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return FadedListWidget(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: List.generate(
           7,
           (_) => Padding(
@@ -21,12 +22,13 @@ class LoadingContactWidget extends StatelessWidget {
             child: Row(
               children: [
                 if (showAvatar) ...[
-                  const Skeleton(size: 42, borderRadius: 42),
+                  const Skeleton.circle(size: 42),
                   const SizedBox(width: 14),
                 ] else ...[
                   const SizedBox(height: 42),
                 ],
                 const Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Skeleton(height: 15, width: 120),

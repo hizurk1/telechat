@@ -10,6 +10,7 @@ import 'package:telechat/app/widgets/gap.dart';
 import 'package:telechat/app/widgets/no_border_text_field.dart';
 import 'package:telechat/app/widgets/unfocus.dart';
 import 'package:telechat/core/extensions/build_context.dart';
+import 'package:telechat/features/chat/pages/chat_page.dart';
 import 'package:telechat/features/contact/controllers/contact_controller.dart';
 import 'package:telechat/features/contact/controllers/contact_state.dart';
 import 'package:telechat/features/contact/pages/add_contact_page.dart';
@@ -127,7 +128,9 @@ class _SelectContactPageState extends ConsumerState<SelectContactPage> {
                     final contact = state.searchList[index];
                     return ContactItemWidget(
                       onTap: () {
-                        debugPrint(contact.name);
+                        Navigator.pushReplacementNamed(context, ChatPage.route, arguments: {
+                          'contact': contact,
+                        });
                       },
                       name: contact.name,
                       subText: contact.phoneNumber,

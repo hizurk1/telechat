@@ -29,6 +29,15 @@ class UserController {
 
   User? get currentUser => userRepository.currentUser;
 
+  //* Get user data as stream
+  Stream<UserModel?> getUserContactAsStream(String contactId) {
+    return userRepository.getUserContactAsStreamFromDB(contactId).map(
+      (data) {
+        return data != null ? UserModel.fromMap(data) : null;
+      },
+    );
+  }
+
   //* Get user data
   Future<UserModel?> getUserData() async {
     final userData = await userRepository.getUserDataFromDB();
@@ -48,7 +57,7 @@ class UserController {
     try {
       await userRepository.updateUserDataToDB(map: map);
     } catch (e) {
-      logger.e("updateUserData: ${e.toString()}");
+      logger.e(e.toString());
     }
   }
 
@@ -100,7 +109,7 @@ class UserController {
         },
       );
     } catch (e) {
-      logger.e("saveUserData: ${e.toString()}");
+      logger.e(e.toString());
     }
   }
 }

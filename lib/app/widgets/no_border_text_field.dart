@@ -4,16 +4,16 @@ import 'package:telechat/app/themes/app_text_theme.dart';
 class NoBorderTextField extends StatelessWidget {
   const NoBorderTextField({
     super.key,
-    required this.controller,
-    required this.hintText,
+    this.controller,
+    this.hintText,
     this.autofocus = false,
     this.focusNode,
     this.onChanged,
     this.onSubmitted,
   });
 
-  final TextEditingController controller;
-  final String hintText;
+  final TextEditingController? controller;
+  final String? hintText;
   final bool autofocus;
   final FocusNode? focusNode;
   final void Function(String text)? onChanged;

@@ -42,6 +42,7 @@ class CachedNetworkImageCustom extends StatelessWidget {
         imageUrl: imageUrl,
         height: size?.r ?? height,
         width: size?.r ?? width,
+        fit: BoxFit.cover,
         placeholder: (_, __) => Container(
           height: size?.r ?? height,
           width: size?.r ?? width,

@@ -1,10 +1,15 @@
+// ignore_for_file: unused_element
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/constants/gen/assets.gen.dart';
+import 'package:telechat/app/themes/app_color.dart';
 import 'package:telechat/app/themes/app_text_theme.dart';
+import 'package:telechat/app/widgets/gap.dart';
 import 'package:telechat/features/authentication/pages/fill_user_info_page.dart';
 import 'package:telechat/features/authentication/pages/sign_in_page.dart';
 import 'package:telechat/features/authentication/pages/verify_opt_page.dart';
+import 'package:telechat/features/chat/pages/chat_page.dart';
 import 'package:telechat/features/contact/pages/add_contact_page.dart';
 import 'package:telechat/features/contact/pages/select_contact_page.dart';
 import 'package:telechat/features/home/pages/home_page.dart';
@@ -40,10 +45,13 @@ class AppRoutes {
         return _SlidePageRoute(page: const HomePage());
 
       case SelectContactPage.route:
-        return _defaultPageRoute(page: const SelectContactPage());
+        return _SlidePageRoute(page: const SelectContactPage());
 
       case AddContactPage.route:
-        return _defaultPageRoute(page: const AddContactPage());
+        return _SlidePageRoute(page: const AddContactPage());
+
+      case ChatPage.route:
+        return _SlidePageRoute(page: ChatPage(contact: args!['contact']));
 
       default:
         return _errorRoute();
@@ -57,6 +65,13 @@ class AppRoutes {
   static Route<dynamic> _errorRoute() {
     return MaterialPageRoute(builder: (_) {
       return Scaffold(
+        appBar: AppBar(
+          surfaceTintColor: AppColors.background,
+          backgroundColor: AppColors.background,
+          iconTheme: const IconThemeData(color: AppColors.white),
+          elevation: 0,
+          automaticallyImplyLeading: true,
+        ),
         body: Center(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -71,6 +86,7 @@ class AppRoutes {
                   "Page not found!",
                   style: AppTextStyle.bodyL.white,
                 ),
+                const Gap(40),
               ],
             ),
           ),
@@ -104,42 +120,5 @@ class _SlidePageRoute extends PageRouteBuilder {
             ).animate(animation),
             child: child,
           ),
-        );
-}
-
-class FabZoomPageRoute extends PageRouteBuilder {
-  final Widget page;
-  final Offset fabPosition;
-  final Size fabSize;
-
-  FabZoomPageRoute({
-    required this.page,
-    required this.fabPosition,
-    required this.fabSize,
-  }) : super(
-          pageBuilder: (context, animation, secondaryAnimation) => page,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            final scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-              CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeInOut,
-              ),
-            );
-
-            return Transform(
-              transform: Matrix4.identity()
-                ..translate(
-                  fabPosition.dx + (fabSize.width / 2),
-                  fabPosition.dy + (fabSize.height / 2),
-                )
-                ..scale(scaleAnimation.value)
-                ..translate(
-                  -(fabPosition.dx + (fabSize.width / 2)),
-                  -(fabPosition.dy + (fabSize.height / 2)),
-                ),
-              alignment: Alignment.center,
-              child: child,
-            );
-          },
         );
 }

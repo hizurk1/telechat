@@ -65,7 +65,7 @@ class SearchContactController extends StateNotifier<SearchContactState> {
         },
       );
     } catch (e) {
-      logger.e("addContactForUser: ${e.toString()}");
+      logger.e(e.toString());
     }
   }
 
@@ -90,7 +90,7 @@ class SearchContactController extends StateNotifier<SearchContactState> {
         contactList: contacts,
       );
     } catch (e) {
-      logger.e("globalContactSearchByKeyword: ${e.toString()}");
+      logger.e(e.toString());
       state = state.copyWith(
         status: SearchContactStatus.error,
         contactList: [],

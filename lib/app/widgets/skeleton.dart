@@ -9,19 +9,28 @@ class Skeleton extends StatelessWidget {
     this.width,
     this.size,
     this.borderRadius,
-    this.opacity,
+    this.color,
   });
 
-  final double? height, width, size, borderRadius, opacity;
+  const Skeleton.circle({
+    super.key,
+    required this.size,
+    this.height,
+    this.width,
+    this.color,
+  }) : borderRadius = size;
+
+  final double? height, width, size, borderRadius;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: size?.r ?? height?.h,
-      width: size?.r ?? width?.w,
+      height: size?.r ?? height?.h ?? 5.h,
+      width: size?.r ?? width?.w ?? 20.w,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular((borderRadius ?? 8).r),
-        color: AppColors.card,
+        color: (color ?? AppColors.card),
       ),
     );
   }

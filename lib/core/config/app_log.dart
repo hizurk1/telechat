@@ -3,7 +3,7 @@ import 'package:logger/logger.dart';
 /// How to use: logger.<t/d/i/e/f>()
 ///
 /// Example: `logger.e("This is an error")`
-final logger = Logger(printer: CustomPrinter());
+final logger = Logger(printer: PrettyPrinter());
 
 class CustomPrinter extends LogPrinter {
   final Map<Level, String> emojis = {

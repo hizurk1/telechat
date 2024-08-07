@@ -69,7 +69,7 @@ class ContactController extends StateNotifier<ContactState> {
         return;
       }
     } catch (e) {
-      logger.e("getContacts: ${e.toString()}");
+      logger.e(e.toString());
     }
     state = state.copyWith(
       status: ContactStatus.error,

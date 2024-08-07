@@ -39,7 +39,7 @@ class CloudStorageService {
       final downloadUrl = await snapshot.ref.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      logger.e(e);
+      logger.e(e.toString());
       return null;
     }
   }
