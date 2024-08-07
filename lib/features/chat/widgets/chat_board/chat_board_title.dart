@@ -45,7 +45,7 @@ class ChatBoardTitleWidget extends ConsumerWidget {
                     userModel?.name ?? '',
                     style: AppTextStyle.bodyM.medium,
                   ),
-                  const Gap(4),
+                  const Gap.xsmall(),
                   Text(
                     isOnline ? "Online" : "Offline",
                     style: AppTextStyle.labelL.copyWith(

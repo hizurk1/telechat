@@ -15,7 +15,7 @@ class ChatBoardTitleSkeleton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Skeleton(height: 15, width: 70, color: AppColors.textGrey.withOpacity(0.25)),
-              const Gap(4),
+              const Gap.xsmall(),
               Skeleton(height: 10, width: 40, color: AppColors.textGrey.withOpacity(0.25)),
             ],
           ),

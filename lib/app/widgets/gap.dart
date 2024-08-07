@@ -4,6 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class Gap extends StatelessWidget {
   const Gap(this.size, {super.key});
 
+  /// Size = 4
+  const Gap.xsmall({super.key}) : size = 4;
+
   /// Size = 8
   const Gap.small({super.key}) : size = 8;
 

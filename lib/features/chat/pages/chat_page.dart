@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/themes/themes.dart';
 import 'package:telechat/app/widgets/unfocus.dart';
 import 'package:telechat/features/chat/widgets/chat_board/chat_board_bottom_input.dart';
+import 'package:telechat/features/chat/widgets/chat_board/chat_board_list_view.dart';
 import 'package:telechat/features/chat/widgets/chat_board/chat_board_title.dart';
 
 class ChatPage extends StatefulWidget {
@@ -45,7 +46,14 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ],
         ),
-        bottomSheet: ChatPageBottomInputWidget(receiverId: widget.contactId),
+        body: Column(
+          children: [
+            Expanded(
+              child: ChatBoardListViewWidget(contactId: widget.contactId),
+            ),
+            ChatPageBottomInputWidget(receiverId: widget.contactId),
+          ],
+        ),
       ),
     );
   }

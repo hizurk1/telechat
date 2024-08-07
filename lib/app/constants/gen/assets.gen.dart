@@ -82,6 +82,10 @@ class $AssetsSvgsGen {
   /// File path: assets/svgs/intro.svg
   SvgGenImage get intro => const SvgGenImage('assets/svgs/intro.svg');
 
+  /// File path: assets/svgs/meeting_friends.svg
+  SvgGenImage get meetingFriends =>
+      const SvgGenImage('assets/svgs/meeting_friends.svg');
+
   /// File path: assets/svgs/user_green.svg
   SvgGenImage get userGreen => const SvgGenImage('assets/svgs/user_green.svg');
 
@@ -96,6 +100,7 @@ class $AssetsSvgsGen {
         eyeClose,
         eyeOpen,
         intro,
+        meetingFriends,
         userGreen
       ];
 }

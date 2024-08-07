@@ -22,4 +22,17 @@ extension DateTimeExt on DateTime {
   }
 
   String get hhmmaa => DateFormat('HH:mm aa').format(this);
+
+  String? get dynamicDateWithinYear {
+    final now = DateTime.now();
+    final difference = now.difference(this);
+
+    if (difference.inDays == 0) {
+      return null; // Same day
+    } else if (now.year == year) {
+      return DateFormat('MMM d').format(this); // Same year
+    } else {
+      return DateFormat('MMM d, yyyy').format(this); // Different year
+    }
+  }
 }

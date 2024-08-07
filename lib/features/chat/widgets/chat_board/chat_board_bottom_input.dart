@@ -34,8 +34,17 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
   Widget build(BuildContext context) {
     return Container(
       width: context.screenWidth,
-      color: AppColors.card,
       padding: EdgeInsets.symmetric(horizontal: 8.w),
+      decoration: BoxDecoration(
+        color: AppColors.card,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(.2),
+            offset: const Offset(0, -1),
+            blurRadius: 1,
+          ),
+        ],
+      ),
       child: Row(
         children: [
           IconButton(
@@ -46,7 +55,7 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
               size: 30.r,
             ),
           ),
-          const Gap(4),
+          const Gap.xsmall(),
           Expanded(
             child: NoBorderTextField(
               controller: _textInputController,

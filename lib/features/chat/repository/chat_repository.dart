@@ -28,6 +28,22 @@ class ChatRepository {
     required this.ref,
   });
 
+  Stream<List<Map<String, dynamic>>> getListOfChatMessages({
+    required String contactId,
+  }) {
+    return database
+        .collection(Collections.users)
+        .doc(auth.currentUser?.uid)
+        .collection(Collections.chats)
+        .doc(contactId)
+        .collection(Collections.messages)
+        .orderBy("timeSent")
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
+        );
+  }
+
   Stream<List<Map<String, dynamic>>> getListOfChatContacts() {
     return database
         .collection(Collections.users)

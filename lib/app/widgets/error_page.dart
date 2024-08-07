@@ -43,7 +43,7 @@ class ErrorPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.replay_rounded, color: AppColors.background, size: 20.r),
-                    const Gap(4),
+                    const Gap.xsmall(),
                     Text("Retry", style: AppTextStyle.bodyS.bg),
                   ],
                 ),

@@ -1,6 +1,9 @@
+import 'dart:core';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:telechat/core/config/app_log.dart';
 import 'package:telechat/features/chat/models/chat_contact_model.dart';
+import 'package:telechat/features/chat/models/chat_message_model.dart';
 import 'package:telechat/features/chat/repository/chat_repository.dart';
 import 'package:telechat/shared/controllers/user_controller.dart';
 import 'package:telechat/shared/models/user_model.dart';
@@ -22,6 +25,14 @@ class ChatController {
     required this.chatRepository,
     required this.ref,
   });
+
+  Stream<List<ChatMessageModel>> getListOfChatMessages({
+    required String contactId,
+  }) {
+    return chatRepository.getListOfChatMessages(contactId: contactId).map((listOfMaps) {
+      return listOfMaps.map((map) => ChatMessageModel.fromMap(map)).toList();
+    });
+  }
 
   Stream<List<ChatContactModel>> getListOfChatContacts() {
     return chatRepository.getListOfChatContacts().map((listOfMaps) {
