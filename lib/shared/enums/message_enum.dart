@@ -15,4 +15,14 @@ enum MessageEnum {
       String() => MessageEnum.text,
     };
   }
+
+  String get message {
+    return switch (this) {
+      MessageEnum.text => "Message",
+      MessageEnum.image => "📷 Photo",
+      MessageEnum.audio => "🔉 Audio",
+      MessageEnum.video => "📽️ Video",
+      MessageEnum.gif => "✨ GIF",
+    };
+  }
 }

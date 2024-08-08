@@ -1,11 +1,16 @@
+import 'dart:io' show File;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/themes/app_color.dart';
+import 'package:telechat/app/utils/navigator.dart';
 import 'package:telechat/app/widgets/gap.dart';
 import 'package:telechat/app/widgets/no_border_text_field.dart';
 import 'package:telechat/core/extensions/build_context.dart';
 import 'package:telechat/features/chat/controllers/chat_controller.dart';
+import 'package:telechat/features/chat/widgets/chat_board/chat_board_send_image_dialog.dart';
+import 'package:telechat/shared/enums/message_enum.dart';
 
 class ChatPageBottomInputWidget extends ConsumerStatefulWidget {
   final String receiverId;
@@ -22,6 +27,7 @@ class ChatPageBottomInputWidget extends ConsumerStatefulWidget {
 class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputWidget> {
   final _textInputController = TextEditingController();
   final _showSendButtonNotifier = ValueNotifier(false);
+  File? image;
 
   @override
   void dispose() {
@@ -74,7 +80,7 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
             child: Row(
               children: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () => selectAttachImage(),
                   icon: Icon(
                     Icons.attach_file_rounded,
                     color: AppColors.iconGrey,
@@ -107,6 +113,36 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
         ],
       ),
     );
+  }
+
+  selectAttachImage() async {
+    image = null;
+    final pickedImage = await ref.read(chatControllerProvider).pickImageFromGallery();
+    if (pickedImage != null && mounted) {
+      image = pickedImage;
+      ChatBoardSendImageDialog(
+        image: pickedImage,
+        onSend: (String caption) {
+          sendMediaFileMessage(caption.isNotEmpty ? caption : null);
+        },
+      ).show(context);
+    } else {
+      AppNavigator.showMessage(
+        "Can not select this image! Please try again.",
+        type: SnackbarType.error,
+      );
+    }
+  }
+
+  sendMediaFileMessage(String? caption) async {
+    if (image != null) {
+      await ref.read(chatControllerProvider).sendMessageAsMediaFile(
+            messageType: MessageEnum.image,
+            receiverId: widget.receiverId,
+            file: image!,
+            caption: caption,
+          );
+    }
   }
 
   sendTextMessage() async {

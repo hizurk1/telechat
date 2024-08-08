@@ -1,12 +1,17 @@
+import 'dart:io' show File;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:telechat/app/constants/app_const.dart';
 import 'package:telechat/app/constants/firebase_const.dart';
 import 'package:telechat/core/config/app_log.dart';
+import 'package:telechat/core/error_handler/error.dart';
 import 'package:telechat/features/chat/models/chat_contact_model.dart';
 import 'package:telechat/features/chat/models/chat_message_model.dart';
 import 'package:telechat/shared/enums/message_enum.dart';
 import 'package:telechat/shared/models/user_model.dart';
+import 'package:telechat/shared/repositories/cloud_storage.dart';
 import 'package:uuid/uuid.dart';
 
 final chatRepositoryProvider = Provider((ref) {
@@ -28,6 +33,46 @@ class ChatRepository {
     required this.ref,
   });
 
+  Future<void> sendMessageAsMediaFile({
+    required MessageEnum messageType,
+    required UserModel receiverModel,
+    required UserModel senderModel,
+    required File file,
+    String? caption,
+  }) async {
+    try {
+      final timeSent = DateTime.now();
+      final messageId = const Uuid().v1();
+
+      final imageUrl = await ref.read(cloudStorageServiceProvider).storeFileToStorage(
+            path: "chats/${messageType.name}/${senderModel.uid}/${receiverModel.uid}/$messageId",
+            file: file,
+          );
+
+      if (imageUrl != null) {
+        await _saveDataToContactsSubCollection(
+          senderModel: senderModel,
+          receiverModel: receiverModel,
+          timeSent: timeSent,
+          lastMessage: messageType.message,
+        );
+
+        final message = caption != null ? "$imageUrl${AppConst.captionSpliter}$caption" : imageUrl;
+        await _saveMessageToMessagesSubCollection(
+          senderId: senderModel.uid,
+          receiverId: receiverModel.uid,
+          timeSent: timeSent,
+          message: message,
+          messageType: messageType,
+        );
+      } else {
+        throw const DatabaseError(message: "Failed to upload your photo!");
+      }
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
+
   Stream<List<Map<String, dynamic>>> getListOfChatMessages({
     required String contactId,
   }) {
@@ -37,7 +82,7 @@ class ChatRepository {
         .collection(Collections.chats)
         .doc(contactId)
         .collection(Collections.messages)
-        .orderBy("timeSent")
+        .orderBy("timeSent", descending: true)
         .snapshots()
         .map(
           (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),

@@ -83,7 +83,7 @@ class BorderTextField extends StatelessWidget {
                       )
                     : null,
                 hintText: hintText,
-                hintStyle: AppTextStyle.bodyS,
+                hintStyle: AppTextStyle.bodyS.copyWith(color: hintColor),
                 counterText: '',
                 prefixIcon: prefix,
                 suffixIcon: isPasswordField

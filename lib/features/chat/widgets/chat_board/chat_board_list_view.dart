@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/themes/themes.dart';
@@ -43,12 +42,6 @@ class _ChatBoardListViewWidgetState extends ConsumerState<ChatBoardListViewWidge
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const LoadingIndicatorPage();
         }
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          final keyboardHeight = MediaQuery.viewInsetsOf(context).bottom;
-          _scrollController.jumpTo(
-            _scrollController.position.maxScrollExtent + (keyboardHeight > 0 ? keyboardHeight : 0),
-          );
-        });
         final List<ChatMessageModel>? chatMessages = snapshot.data;
         return chatMessages != null
             ? chatMessages.isNotEmpty
@@ -56,12 +49,14 @@ class _ChatBoardListViewWidgetState extends ConsumerState<ChatBoardListViewWidge
                     controller: _scrollController,
                     itemCount: chatMessages.length,
                     padding: EdgeInsets.all(16.r),
+                    reverse: true,
                     separatorBuilder: (_, int i) => _buildSeperator(uid, i, chatMessages),
                     itemBuilder: (context, int index) {
                       final chatMessage = chatMessages[index];
                       return ChatBoardMessageItemWidget(
                         message: chatMessage.textMessage,
                         timeSent: chatMessage.timeSent,
+                        messageType: chatMessage.messageType,
                         isSeen: chatMessage.isSeen,
                         isMe: chatMessage.senderId == uid,
                       );
