@@ -44,7 +44,10 @@ class _ChatBoardListViewWidgetState extends ConsumerState<ChatBoardListViewWidge
           return const LoadingIndicatorPage();
         }
         SchedulerBinding.instance.addPostFrameCallback((_) {
-          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+          final keyboardHeight = MediaQuery.viewInsetsOf(context).bottom;
+          _scrollController.jumpTo(
+            _scrollController.position.maxScrollExtent + (keyboardHeight > 0 ? keyboardHeight : 0),
+          );
         });
         final List<ChatMessageModel>? chatMessages = snapshot.data;
         return chatMessages != null
@@ -52,7 +55,7 @@ class _ChatBoardListViewWidgetState extends ConsumerState<ChatBoardListViewWidge
                 ? ListView.separated(
                     controller: _scrollController,
                     itemCount: chatMessages.length,
-                    padding: EdgeInsets.all(16.r).copyWith(bottom: 4.h),
+                    padding: EdgeInsets.all(16.r),
                     separatorBuilder: (_, int i) => _buildSeperator(uid, i, chatMessages),
                     itemBuilder: (context, int index) {
                       final chatMessage = chatMessages[index];
@@ -70,9 +73,13 @@ class _ChatBoardListViewWidgetState extends ConsumerState<ChatBoardListViewWidge
     );
   }
 
+  /// Seperator is in between `currentMessage` and `nextMessage`.
+  /// And it places on top of the `nextMessage`.
   Widget _buildSeperator(String uid, int i, List<ChatMessageModel> chatMessages) {
-    final String? timeSent = chatMessages[i].timeSent.dynamicDateWithinYear;
-    if (timeSent != null) {
+    final currentMessage = chatMessages[i];
+    final nextMessage = chatMessages[i + 1];
+
+    if (!currentMessage.timeSent.isSameDay(nextMessage.timeSent)) {
       return Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -85,7 +92,7 @@ class _ChatBoardListViewWidgetState extends ConsumerState<ChatBoardListViewWidge
               color: AppColors.cardMessage,
             ),
             child: Text(
-              timeSent,
+              nextMessage.timeSent.formatDateForSeparator(),
               style: AppTextStyle.caption.dark,
             ),
           ),

@@ -25,28 +25,6 @@ class UserRepository {
 
   User? get currentUser => auth.currentUser;
 
-  Future<bool> addContactForUserToDB({
-    required String contactUid,
-  }) async {
-    try {
-      await database.collection(Collections.users).doc(currentUser?.uid).update({
-        "contactIds": FieldValue.arrayUnion([contactUid]),
-      });
-      return true;
-    } catch (e) {
-      logger.e(e.toString());
-      return false;
-    }
-  }
-
-  Stream<Map<String, dynamic>?> getUserContactAsStreamFromDB(String contactId) {
-    return database
-        .collection(Collections.users)
-        .doc(contactId)
-        .snapshots()
-        .map((event) => event.data());
-  }
-
   Future<Map<String, dynamic>?> getUserDataByIdFromDB(String userId) async {
     try {
       final userData = await database.collection(Collections.users).doc(userId).get();
@@ -87,6 +65,38 @@ class UserRepository {
       );
     } catch (e) {
       return Left(DatabaseError(message: e.toString()));
+    }
+  }
+
+  Future<bool> addContactForUserToDB({
+    required String contactUid,
+  }) async {
+    try {
+      await database.collection(Collections.users).doc(currentUser?.uid).update({
+        "contactIds": FieldValue.arrayUnion([contactUid]),
+      });
+      return true;
+    } catch (e) {
+      logger.e(e.toString());
+      return false;
+    }
+  }
+
+  Stream<Map<String, dynamic>?> getUserContactAsStreamFromDB(String contactId) {
+    return database
+        .collection(Collections.users)
+        .doc(contactId)
+        .snapshots()
+        .map((event) => event.data());
+  }
+
+  Future<void> updateUserOnlineStatus(bool isOnline) async {
+    try {
+      await database.collection(Collections.users).doc(auth.currentUser?.uid).update({
+        "isOnline": isOnline,
+      });
+    } catch (e) {
+      logger.e(e.toString());
     }
   }
 }

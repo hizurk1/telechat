@@ -29,15 +29,6 @@ class UserController {
 
   User? get currentUser => userRepository.currentUser;
 
-  //* Get user data as stream
-  Stream<UserModel?> getUserContactAsStream(String contactId) {
-    return userRepository.getUserContactAsStreamFromDB(contactId).map(
-      (data) {
-        return data != null ? UserModel.fromMap(data) : null;
-      },
-    );
-  }
-
   //* Get user data
   Future<UserModel?> getUserData() async {
     final userData = await userRepository.getUserDataFromDB();
@@ -108,6 +99,24 @@ class UserController {
           AppNavigator.pushNamedAndRemoveUntil(HomePage.route);
         },
       );
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
+
+  //* Get user data as stream
+  Stream<UserModel?> getUserContactAsStream(String contactId) {
+    return userRepository.getUserContactAsStreamFromDB(contactId).map(
+      (data) {
+        return data != null ? UserModel.fromMap(data) : null;
+      },
+    );
+  }
+
+  //* Update user online status
+  Future<void> updateUserOnlineStatus(bool isOnline) async {
+    try {
+      await userRepository.updateUserOnlineStatus(isOnline);
     } catch (e) {
       logger.e(e.toString());
     }
