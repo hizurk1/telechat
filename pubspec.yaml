@@ -35,6 +35,10 @@ dependencies:
   cached_network_image: ^3.3.1
   uuid: ^4.4.2
   cached_video_player: ^2.0.4
+  flutter_sound: ^9.9.6
+  permission_handler: ^11.3.1
+  path_provider: ^2.1.4
+  audioplayers: ^6.0.0
   
   giphy_get:
     path: ./packages/giphy_get

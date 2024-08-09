@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/themes/app_color.dart';
+import 'package:telechat/app/utils/navigator.dart';
 import 'package:telechat/app/widgets/gap.dart';
 import 'package:telechat/app/widgets/no_border_text_field.dart';
 import 'package:telechat/core/extensions/build_context.dart';
 import 'package:telechat/features/chat/controllers/chat_controller.dart';
+import 'package:telechat/features/chat/controllers/chat_record_controller.dart';
 import 'package:telechat/features/chat/widgets/chat_board/chat_board_send_image_dialog.dart';
 import 'package:telechat/shared/enums/message_enum.dart';
 
@@ -38,6 +40,7 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
 
   @override
   Widget build(BuildContext context) {
+    final isRecording = ref.watch(chatRecordControllerProvider).isRecording;
     return Container(
       width: context.screenWidth,
       padding: EdgeInsets.symmetric(horizontal: 8.w),
@@ -137,12 +140,10 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
                         ),
                       ),
                 IconButton(
-                  onPressed: () {
-                    if (isExpanded) setState(() => isExpanded = false);
-                  },
+                  onPressed: () => onRecordingAudioPressed(),
                   icon: Icon(
-                    Icons.keyboard_voice_outlined,
-                    color: AppColors.iconGrey,
+                    isRecording ? Icons.stop_circle_outlined : Icons.keyboard_voice_outlined,
+                    color: isRecording ? AppColors.primary : AppColors.iconGrey,
                     size: 30.r,
                   ),
                 ),
@@ -167,6 +168,34 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
         ],
       ),
     );
+  }
+
+  onRecordingAudioPressed() async {
+    if (isExpanded) setState(() => isExpanded = false);
+
+    final notifier = ref.read(chatRecordControllerProvider.notifier);
+    final state = ref.read(chatRecordControllerProvider);
+    if (state.isNotReady) {
+      await notifier.initialize();
+    }
+
+    if (state.isRecording) {
+      await notifier.stopRecording();
+      if (state.audioPath.isNotEmpty) {
+        await ref.read(chatControllerProvider).sendMessageAsMediaFile(
+              messageType: MessageEnum.audio,
+              receiverId: widget.receiverId,
+              file: File(state.audioPath),
+            );
+      } else {
+        AppNavigator.showMessage(
+          "Can not find the audio file. Please try again.",
+          type: SnackbarType.error,
+        );
+      }
+    } else {
+      await notifier.startRecording();
+    }
   }
 
   selectAttachVideo() async {

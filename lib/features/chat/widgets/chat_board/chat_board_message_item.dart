@@ -7,6 +7,7 @@ import 'package:telechat/app/widgets/cached_network_image.dart';
 import 'package:telechat/app/widgets/gap.dart';
 import 'package:telechat/core/extensions/build_context.dart';
 import 'package:telechat/core/extensions/date_time.dart';
+import 'package:telechat/features/chat/widgets/chat_board/chat_board_message_audio.dart';
 import 'package:telechat/features/chat/widgets/chat_board/chat_board_message_video_player.dart';
 import 'package:telechat/shared/enums/message_enum.dart';
 

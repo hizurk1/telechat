@@ -60,6 +60,8 @@ class _ChatMessageItemContent extends StatelessWidget {
         return CachedNetworkImageCustom(
           imageUrl: url,
         );
+      case MessageEnum.audio:
+        return ChatBoardMessageAudioWidget(audioUrl: url);
       default:
         return child;
     }
