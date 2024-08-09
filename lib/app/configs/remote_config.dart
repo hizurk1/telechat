@@ -31,6 +31,7 @@ class RemoteConfig {
     defaultUserProfilePicUrl = _remoteConfig.getString("defaultUserProfilePicUrl");
     otpTimeOutInSeconds = _remoteConfig.getInt("otpTimeOutInSeconds");
     maxVideoLengthInMins = _remoteConfig.getInt("maxVideoLengthInMins");
+    giphyApiKey = _remoteConfig.getString("giphyApiKey");
   }
 
   static String defaultUserProfilePicUrl =
@@ -39,4 +40,6 @@ class RemoteConfig {
   static int otpTimeOutInSeconds = 60;
 
   static int maxVideoLengthInMins = 3;
+
+  static String giphyApiKey = "";
 }

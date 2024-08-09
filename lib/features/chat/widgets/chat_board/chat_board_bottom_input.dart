@@ -56,9 +56,17 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
           IconButton(
             onPressed: () {
               if (isExpanded) setState(() => isExpanded = false);
+              ref.read(chatControllerProvider).pickGIF().then((gif) {
+                if (gif != null) {
+                  ref.read(chatControllerProvider).sendMessageAsGIF(
+                        receiverId: widget.receiverId,
+                        gifUrl: gif.url,
+                      );
+                }
+              });
             },
             icon: Icon(
-              Icons.emoji_emotions_outlined,
+              Icons.gif_box_outlined,
               color: AppColors.iconGrey,
               size: 30.r,
             ),

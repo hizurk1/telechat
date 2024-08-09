@@ -33,6 +33,35 @@ class ChatRepository {
     required this.ref,
   });
 
+  Future<void> sendMessageAsGIF({
+    required String gifUrl,
+    required UserModel receiverModel,
+    required UserModel senderModel,
+  }) async {
+    try {
+      final timeSent = DateTime.now();
+
+      //! /users/{senderId:receiverId}/chats/{receiverId:senderId}/data
+      await _saveDataToContactsSubCollection(
+        senderModel: senderModel,
+        receiverModel: receiverModel,
+        timeSent: timeSent,
+        lastMessage: MessageEnum.gif.message,
+      );
+
+      //! /users/{senderId:receiverId}/chats/{receiver:sender}/messages/{messageId}/data
+      await _saveMessageToMessagesSubCollection(
+        senderId: senderModel.uid,
+        receiverId: receiverModel.uid,
+        timeSent: timeSent,
+        messageType: MessageEnum.gif,
+        message: gifUrl,
+      );
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
+
   Future<void> sendMessageAsMediaFile({
     required MessageEnum messageType,
     required UserModel receiverModel,

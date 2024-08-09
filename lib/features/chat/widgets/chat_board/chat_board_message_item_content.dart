@@ -56,6 +56,10 @@ class _ChatMessageItemContent extends StatelessWidget {
                 ],
               )
             : child;
+      case MessageEnum.gif:
+        return CachedNetworkImageCustom(
+          imageUrl: url,
+        );
       default:
         return child;
     }

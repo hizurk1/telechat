@@ -2,11 +2,14 @@ import 'dart:core';
 import 'dart:io' show File;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:giphy_get/giphy_get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:telechat/app/configs/remote_config.dart';
+import 'package:telechat/app/themes/app_color.dart';
 import 'package:telechat/app/utils/navigator.dart';
 import 'package:telechat/core/config/app_log.dart';
 import 'package:telechat/core/error_handler/error.dart';
+import 'package:telechat/core/extensions/string.dart';
 import 'package:telechat/features/chat/models/chat_contact_model.dart';
 import 'package:telechat/features/chat/models/chat_message_model.dart';
 import 'package:telechat/features/chat/repository/chat_repository.dart';
@@ -49,15 +52,12 @@ class ChatController {
     });
   }
 
-  Future<void> sendMessageAsText({
-    required String receiverId,
-    required String textMessage,
-  }) async {
+  Future<(UserModel, UserModel)?> _getSenderAndReceiverModel(String receiverId) async {
     try {
       final senderModel = await ref.read(userControllerProvider).getUserData();
       if (senderModel == null) {
         logger.e("senderModel == null");
-        return;
+        return null;
       }
 
       // Get receiver data model
@@ -65,15 +65,30 @@ class ChatController {
           await ref.read(userRepositoryProvider).getUserDataByIdFromDB(receiverId);
       if (receiverUserMap == null) {
         logger.e("receiverUserMap == null");
-        return;
+        return null;
       }
       final receiverModel = UserModel.fromMap(receiverUserMap);
+
+      return (senderModel, receiverModel);
+    } catch (e) {
+      logger.e(e.toString());
+      return null;
+    }
+  }
+
+  Future<void> sendMessageAsText({
+    required String receiverId,
+    required String textMessage,
+  }) async {
+    try {
+      final senderAndReceiver = await _getSenderAndReceiverModel(receiverId);
+      if (senderAndReceiver == null) return;
 
       // Send message
       await chatRepository.sendMessageAsText(
         textMessage: textMessage,
-        receiverModel: receiverModel,
-        senderModel: senderModel,
+        senderModel: senderAndReceiver.$1,
+        receiverModel: senderAndReceiver.$2,
       );
     } catch (e) {
       logger.e(e.toString());
@@ -87,25 +102,13 @@ class ChatController {
     String? caption,
   }) async {
     try {
-      final senderModel = await ref.read(userControllerProvider).getUserData();
-      if (senderModel == null) {
-        logger.e("senderModel == null");
-        return;
-      }
-
-      // Get receiver data model
-      final receiverUserMap =
-          await ref.read(userRepositoryProvider).getUserDataByIdFromDB(receiverId);
-      if (receiverUserMap == null) {
-        logger.e("receiverUserMap == null");
-        return;
-      }
-      final receiverModel = UserModel.fromMap(receiverUserMap);
+      final senderAndReceiver = await _getSenderAndReceiverModel(receiverId);
+      if (senderAndReceiver == null) return;
 
       // Send message
       await chatRepository.sendMessageAsMediaFile(
-        receiverModel: receiverModel,
-        senderModel: senderModel,
+        senderModel: senderAndReceiver.$1,
+        receiverModel: senderAndReceiver.$2,
         messageType: messageType,
         file: file,
         caption: caption,
@@ -113,6 +116,29 @@ class ChatController {
     } on DatabaseError catch (e) {
       logger.e(e.message);
       AppNavigator.showMessage(e.message, type: SnackbarType.error);
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
+
+  Future<void> sendMessageAsGIF({
+    required String receiverId,
+    required String? gifUrl,
+  }) async {
+    if (gifUrl.isNullOrEmpty) return;
+
+    try {
+      final senderAndReceiver = await _getSenderAndReceiverModel(receiverId);
+      if (senderAndReceiver == null) return;
+
+      // Send message
+      final gifId = gifUrl!.split('-').last;
+      final url = "https://i.giphy.com/media/$gifId/200.gif";
+      await chatRepository.sendMessageAsGIF(
+        gifUrl: url,
+        senderModel: senderAndReceiver.$1,
+        receiverModel: senderAndReceiver.$2,
+      );
     } catch (e) {
       logger.e(e.toString());
     }
@@ -139,5 +165,27 @@ class ChatController {
       logger.e(e.toString());
       return null;
     }
+  }
+
+  Future<GiphyGif?> pickGIF() async {
+    if (RemoteConfig.giphyApiKey.isNotEmpty) {
+      try {
+        final gif = await GiphyGet.getGif(
+          context: AppNavigator.currentContext!,
+          apiKey: RemoteConfig.giphyApiKey,
+          tabColor: AppColors.primary,
+          debounceTimeInMilliseconds: 350,
+        );
+        return gif;
+      } catch (e) {
+        logger.e(e.toString());
+      }
+    } else {
+      AppNavigator.showMessage(
+        "Can not connect to Giphy server!",
+        type: SnackbarType.error,
+      );
+    }
+    return null;
   }
 }
