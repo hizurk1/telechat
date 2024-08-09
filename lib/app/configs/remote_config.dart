@@ -17,7 +17,7 @@ class RemoteConfig {
       await _remoteConfig.fetchAndActivate().timeout(
         const Duration(seconds: 30),
         onTimeout: () {
-          logger.e("[RemoteConfig.init] fetchAndActivate=timeout(30s)");
+          logger.e("fetchAndActivate=timeout(30s)");
           return false;
         },
       );
@@ -30,10 +30,13 @@ class RemoteConfig {
   static void _getRemoteConfig() {
     defaultUserProfilePicUrl = _remoteConfig.getString("defaultUserProfilePicUrl");
     otpTimeOutInSeconds = _remoteConfig.getInt("otpTimeOutInSeconds");
+    maxVideoLengthInMins = _remoteConfig.getInt("maxVideoLengthInMins");
   }
 
   static String defaultUserProfilePicUrl =
       "https://firebasestorage.googleapis.com/v0/b/telechat-4cdd0.appspot.com/o/app%2Fuser_default_avatar.png?alt=media&token=a7b4ef6f-6dc7-423d-a8e6-6f7e82be5e8c";
 
   static int otpTimeOutInSeconds = 60;
+
+  static int maxVideoLengthInMins = 3;
 }

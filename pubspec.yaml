@@ -34,6 +34,7 @@ dependencies:
   lottie: ^3.1.2
   cached_network_image: ^3.3.1
   uuid: ^4.4.2
+  cached_video_player: ^2.0.4
 
   country_code_picker:
     path: ./packages/CountryCodePicker

@@ -10,6 +10,16 @@ class _ChatMessageItemContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String? caption;
+    String url;
+    if (message.contains(AppConst.captionSpliter)) {
+      url = message.split(AppConst.captionSpliter).first;
+      caption = message.split(AppConst.captionSpliter).last;
+    } else {
+      url = message;
+    }
+
+    Widget child = const SizedBox();
     switch (messageType) {
       case MessageEnum.text:
         return Padding(
@@ -21,22 +31,20 @@ class _ChatMessageItemContent extends StatelessWidget {
           ),
         );
       case MessageEnum.image:
-        String? caption;
-        String url;
-        if (message.contains(AppConst.captionSpliter)) {
-          url = message.split(AppConst.captionSpliter).first;
-          caption = message.split(AppConst.captionSpliter).last;
-        } else {
-          url = message;
+      case MessageEnum.video:
+        if (messageType == MessageEnum.image) {
+          child = CachedNetworkImageCustom(
+            imageUrl: url,
+          );
+        } else if (messageType == MessageEnum.video) {
+          child = ChatBoardMessageVideoPlayerWidget(videoUrl: url);
         }
         return caption != null
             ? Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CachedNetworkImageCustom(
-                    imageUrl: url,
-                  ),
+                  child,
                   const Gap.xsmall(),
                   Padding(
                     padding: EdgeInsets.only(left: 8.w, top: 4.h),
@@ -47,11 +55,9 @@ class _ChatMessageItemContent extends StatelessWidget {
                   ),
                 ],
               )
-            : CachedNetworkImageCustom(
-                imageUrl: url,
-              );
+            : child;
       default:
-        return const SizedBox();
+        return child;
     }
   }
 }

@@ -5,13 +5,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/themes/themes.dart';
 import 'package:telechat/app/widgets/gap.dart';
 import 'package:telechat/app/widgets/no_border_text_field.dart';
+import 'package:telechat/core/extensions/build_context.dart';
+import 'package:telechat/shared/enums/message_enum.dart';
 
-class ChatBoardSendImageDialog extends StatefulWidget {
-  final File image;
+class ChatBoardSendMediaDialog extends StatefulWidget {
+  final File media;
+  final MessageEnum type;
   final void Function(String) onSend;
-  const ChatBoardSendImageDialog({
+  const ChatBoardSendMediaDialog({
     super.key,
-    required this.image,
+    required this.media,
+    required this.type,
     required this.onSend,
   });
 
@@ -23,10 +27,10 @@ class ChatBoardSendImageDialog extends StatefulWidget {
   }
 
   @override
-  State<ChatBoardSendImageDialog> createState() => _ChatBoardSendImageDialogState();
+  State<ChatBoardSendMediaDialog> createState() => _ChatBoardSendMediaDialogState();
 }
 
-class _ChatBoardSendImageDialogState extends State<ChatBoardSendImageDialog> {
+class _ChatBoardSendMediaDialogState extends State<ChatBoardSendMediaDialog> {
   String captionMessage = "";
 
   @override
@@ -47,7 +51,7 @@ class _ChatBoardSendImageDialogState extends State<ChatBoardSendImageDialog> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Send an image",
+                    "Send ${widget.type == MessageEnum.image ? "an image" : "a video"}",
                     style: AppTextStyle.bodyM.medium.white,
                   ),
                   Icon(
@@ -61,10 +65,27 @@ class _ChatBoardSendImageDialogState extends State<ChatBoardSendImageDialog> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.r),
                 child: Center(
-                  child: Image.file(
-                    widget.image,
-                    fit: BoxFit.cover,
-                  ),
+                  child: widget.type == MessageEnum.image
+                      ? Image.file(
+                          widget.media,
+                          fit: BoxFit.cover,
+                        )
+                      : Container(
+                          height: 140.h,
+                          width: context.screenWidth,
+                          decoration: BoxDecoration(
+                            color: AppColors.buttonGrey.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Icon(
+                              Icons.play_circle_filled_rounded,
+                              color: AppColors.iconGrey,
+                              size: 40.r,
+                            ),
+                          ),
+                        ),
                 ),
               ),
               const Gap.medium(),

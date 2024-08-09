@@ -3,6 +3,7 @@ import 'dart:io' show File;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:telechat/app/configs/remote_config.dart';
 import 'package:telechat/app/utils/navigator.dart';
 import 'package:telechat/core/config/app_log.dart';
 import 'package:telechat/core/error_handler/error.dart';
@@ -120,6 +121,19 @@ class ChatController {
   Future<File?> pickImageFromGallery() async {
     try {
       final file = await imagePicker.pickImage(source: ImageSource.gallery);
+      return file != null ? File(file.path) : null;
+    } catch (e) {
+      logger.e(e.toString());
+      return null;
+    }
+  }
+
+  Future<File?> pickVideoFromGallery() async {
+    try {
+      final file = await imagePicker.pickVideo(
+        source: ImageSource.gallery,
+        maxDuration: Duration(minutes: RemoteConfig.maxVideoLengthInMins),
+      );
       return file != null ? File(file.path) : null;
     } catch (e) {
       logger.e(e.toString());

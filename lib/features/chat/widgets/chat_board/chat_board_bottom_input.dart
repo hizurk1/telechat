@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/themes/app_color.dart';
-import 'package:telechat/app/utils/navigator.dart';
 import 'package:telechat/app/widgets/gap.dart';
 import 'package:telechat/app/widgets/no_border_text_field.dart';
 import 'package:telechat/core/extensions/build_context.dart';
@@ -27,7 +26,8 @@ class ChatPageBottomInputWidget extends ConsumerStatefulWidget {
 class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputWidget> {
   final _textInputController = TextEditingController();
   final _showSendButtonNotifier = ValueNotifier(false);
-  File? image;
+  File? media;
+  bool isExpanded = false;
 
   @override
   void dispose() {
@@ -54,7 +54,9 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
       child: Row(
         children: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              if (isExpanded) setState(() => isExpanded = false);
+            },
             icon: Icon(
               Icons.emoji_emotions_outlined,
               color: AppColors.iconGrey,
@@ -66,6 +68,7 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
             child: NoBorderTextField(
               controller: _textInputController,
               onChanged: (String text) {
+                if (isExpanded) setState(() => isExpanded = false);
                 if (text.isNotEmpty && !_showSendButtonNotifier.value) {
                   _showSendButtonNotifier.value = true;
                 } else if (text.isEmpty && _showSendButtonNotifier.value) {
@@ -79,16 +82,56 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
             valueListenable: _showSendButtonNotifier,
             child: Row(
               children: [
+                isExpanded
+                    ? Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              setState(() => isExpanded = false);
+                              selectAttachVideo();
+                            },
+                            icon: Icon(
+                              Icons.video_collection_outlined,
+                              color: AppColors.iconGrey,
+                              size: 24.r,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() => isExpanded = false);
+                            },
+                            icon: Icon(
+                              Icons.audiotrack,
+                              color: AppColors.iconGrey,
+                              size: 24.r,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() => isExpanded = false);
+                            },
+                            icon: Icon(
+                              Icons.camera_alt_outlined,
+                              color: AppColors.iconGrey,
+                              size: 24.r,
+                            ),
+                          ),
+                        ],
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          setState(() => isExpanded = true);
+                        },
+                        icon: Icon(
+                          Icons.attach_file_rounded,
+                          color: AppColors.iconGrey,
+                          size: 26.r,
+                        ),
+                      ),
                 IconButton(
-                  onPressed: () => selectAttachImage(),
-                  icon: Icon(
-                    Icons.attach_file_rounded,
-                    color: AppColors.iconGrey,
-                    size: 30.r,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    if (isExpanded) setState(() => isExpanded = false);
+                  },
                   icon: Icon(
                     Icons.keyboard_voice_outlined,
                     color: AppColors.iconGrey,
@@ -100,7 +143,10 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
             builder: (_, bool isShowSend, Widget? buttons) {
               return isShowSend
                   ? IconButton(
-                      onPressed: () => sendTextMessage(),
+                      onPressed: () {
+                        if (isExpanded) setState(() => isExpanded = false);
+                        sendTextMessage();
+                      },
                       icon: Icon(
                         Icons.send_rounded,
                         color: AppColors.primary,
@@ -115,31 +161,42 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
     );
   }
 
-  selectAttachImage() async {
-    image = null;
-    final pickedImage = await ref.read(chatControllerProvider).pickImageFromGallery();
-    if (pickedImage != null && mounted) {
-      image = pickedImage;
-      ChatBoardSendImageDialog(
-        image: pickedImage,
+  selectAttachVideo() async {
+    media = null;
+    final pickedVideo = await ref.read(chatControllerProvider).pickVideoFromGallery();
+    if (pickedVideo != null && mounted) {
+      media = pickedVideo;
+      ChatBoardSendMediaDialog(
+        media: pickedVideo,
+        type: MessageEnum.video,
         onSend: (String caption) {
-          sendMediaFileMessage(caption.isNotEmpty ? caption : null);
+          sendMediaFileMessage(caption.isNotEmpty ? caption : null, MessageEnum.video);
         },
       ).show(context);
-    } else {
-      AppNavigator.showMessage(
-        "Can not select this image! Please try again.",
-        type: SnackbarType.error,
-      );
     }
   }
 
-  sendMediaFileMessage(String? caption) async {
-    if (image != null) {
+  selectAttachImage() async {
+    media = null;
+    final pickedImage = await ref.read(chatControllerProvider).pickImageFromGallery();
+    if (pickedImage != null && mounted) {
+      media = pickedImage;
+      ChatBoardSendMediaDialog(
+        media: pickedImage,
+        type: MessageEnum.image,
+        onSend: (String caption) {
+          sendMediaFileMessage(caption.isNotEmpty ? caption : null, MessageEnum.image);
+        },
+      ).show(context);
+    }
+  }
+
+  sendMediaFileMessage(String? caption, MessageEnum type) async {
+    if (media != null) {
       await ref.read(chatControllerProvider).sendMessageAsMediaFile(
-            messageType: MessageEnum.image,
+            messageType: type,
             receiverId: widget.receiverId,
-            file: image!,
+            file: media!,
             caption: caption,
           );
     }
