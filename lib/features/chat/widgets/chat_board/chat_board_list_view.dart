@@ -53,6 +53,14 @@ class _ChatBoardListViewWidgetState extends ConsumerState<ChatBoardListViewWidge
                     separatorBuilder: (_, int i) => _buildSeperator(uid, i, chatMessages),
                     itemBuilder: (context, int index) {
                       final chatMessage = chatMessages[index];
+
+                      if (!chatMessage.isSeen && chatMessage.receiverId == uid) {
+                        ref.read(chatControllerProvider).updateChatMessageAsSeen(
+                              receiverId: widget.contactId,
+                              messageId: chatMessage.messageId,
+                            );
+                      }
+
                       return ChatBoardMessageItemWidget(
                         username: chatMessage.username,
                         message: chatMessage.textMessage,

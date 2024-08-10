@@ -39,6 +39,16 @@ class ChatController {
     required this.ref,
   });
 
+  Future<void> updateChatMessageAsSeen({
+    required String receiverId,
+    required String messageId,
+  }) async {
+    await chatRepository.updateChatMessageAsSeen(
+      receiverId: receiverId,
+      messageId: messageId,
+    );
+  }
+
   void cancelReplyMessage() {
     ref.read(messageReplyProvider.notifier).update((_) => null);
   }

@@ -34,6 +34,39 @@ class ChatRepository {
     required this.ref,
   });
 
+  Future<void> updateChatMessageAsSeen({
+    required String receiverId,
+    required String messageId,
+  }) async {
+    try {
+      final Map<String, bool> updatedMap = {
+        "isSeen": true,
+      };
+      await Future.wait([
+        // For sender
+        database
+            .collection(Collections.users)
+            .doc(auth.currentUser?.uid)
+            .collection(Collections.chats)
+            .doc(receiverId)
+            .collection(Collections.messages)
+            .doc(messageId)
+            .update(updatedMap),
+        // For receiver
+        database
+            .collection(Collections.users)
+            .doc(receiverId)
+            .collection(Collections.chats)
+            .doc(auth.currentUser?.uid)
+            .collection(Collections.messages)
+            .doc(messageId)
+            .update(updatedMap),
+      ]);
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
+
   Future<void> sendMessageAsGIF({
     required String gifUrl,
     required UserModel receiverModel,
