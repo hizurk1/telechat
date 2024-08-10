@@ -15,7 +15,7 @@ class _ChatBoardMessageItemReply extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 8.w).copyWith(top: 8.h),
       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h).copyWith(right: 8.w),
       decoration: BoxDecoration(
-        color: isMe ? AppColors.primaryBright.withOpacity(0.25) : AppColors.card,
+        color: (isMe ? AppColors.primaryBright : AppColors.textGrey).withOpacity(0.25),
         borderRadius: BorderRadius.circular(8.r),
         border: Border(
           left: BorderSide(
