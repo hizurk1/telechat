@@ -54,11 +54,13 @@ class _ChatBoardListViewWidgetState extends ConsumerState<ChatBoardListViewWidge
                     itemBuilder: (context, int index) {
                       final chatMessage = chatMessages[index];
                       return ChatBoardMessageItemWidget(
+                        username: chatMessage.username,
                         message: chatMessage.textMessage,
                         timeSent: chatMessage.timeSent,
                         messageType: chatMessage.messageType,
                         isSeen: chatMessage.isSeen,
                         isMe: chatMessage.senderId == uid,
+                        messageReply: chatMessage.messageReply,
                       );
                     },
                   )

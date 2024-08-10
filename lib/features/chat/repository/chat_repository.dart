@@ -9,6 +9,7 @@ import 'package:telechat/core/config/app_log.dart';
 import 'package:telechat/core/error_handler/error.dart';
 import 'package:telechat/features/chat/models/chat_contact_model.dart';
 import 'package:telechat/features/chat/models/chat_message_model.dart';
+import 'package:telechat/features/chat/providers/message_reply_provider.dart';
 import 'package:telechat/shared/enums/message_enum.dart';
 import 'package:telechat/shared/models/user_model.dart';
 import 'package:telechat/shared/repositories/cloud_storage.dart';
@@ -37,6 +38,7 @@ class ChatRepository {
     required String gifUrl,
     required UserModel receiverModel,
     required UserModel senderModel,
+    required MessageReply? messageReply,
   }) async {
     try {
       final timeSent = DateTime.now();
@@ -56,6 +58,8 @@ class ChatRepository {
         timeSent: timeSent,
         messageType: MessageEnum.gif,
         message: gifUrl,
+        username: senderModel.name,
+        messageReply: messageReply,
       );
     } catch (e) {
       logger.e(e.toString());
@@ -67,6 +71,7 @@ class ChatRepository {
     required UserModel receiverModel,
     required UserModel senderModel,
     required File file,
+    required MessageReply? messageReply,
     String? caption,
   }) async {
     try {
@@ -93,6 +98,8 @@ class ChatRepository {
           timeSent: timeSent,
           message: message,
           messageType: messageType,
+          username: senderModel.name,
+          messageReply: messageReply,
         );
       } else {
         throw const DatabaseError(message: "Failed to upload your photo!");
@@ -133,6 +140,7 @@ class ChatRepository {
     required String textMessage,
     required UserModel receiverModel,
     required UserModel senderModel,
+    required MessageReply? messageReply,
   }) async {
     try {
       final timeSent = DateTime.now();
@@ -152,6 +160,8 @@ class ChatRepository {
         timeSent: timeSent,
         messageType: MessageEnum.text,
         message: textMessage,
+        username: senderModel.name,
+        messageReply: messageReply,
       );
     } catch (e) {
       logger.e(e.toString());
@@ -216,6 +226,8 @@ class ChatRepository {
     required DateTime timeSent,
     required String message,
     required MessageEnum messageType,
+    required String username,
+    required MessageReply? messageReply,
   }) async {
     try {
       final messageId = const Uuid().v1();
@@ -227,6 +239,8 @@ class ChatRepository {
         timeSent: timeSent,
         messageType: messageType,
         isSeen: false,
+        username: username,
+        messageReply: messageReply,
       );
 
       await Future.wait([

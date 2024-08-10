@@ -129,7 +129,7 @@ class _SelectContactPageState extends ConsumerState<SelectContactPage> {
                     return ContactItemWidget(
                       onTap: () {
                         Navigator.pushReplacementNamed(context, ChatPage.route, arguments: {
-                          'contact': contact,
+                          'contactId': contact.uid,
                         });
                       },
                       name: contact.name,

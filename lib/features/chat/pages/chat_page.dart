@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/themes/themes.dart';
 import 'package:telechat/app/widgets/unfocus.dart';
+import 'package:telechat/features/chat/controllers/chat_controller.dart';
 import 'package:telechat/features/chat/widgets/chat_board/chat_board_bottom_input.dart';
 import 'package:telechat/features/chat/widgets/chat_board/chat_board_list_view.dart';
+import 'package:telechat/features/chat/widgets/chat_board/chat_board_message_reply.dart';
 import 'package:telechat/features/chat/widgets/chat_board/chat_board_title.dart';
 
-class ChatPage extends StatefulWidget {
+class ChatPage extends ConsumerStatefulWidget {
   static const String route = "/chat";
   const ChatPage({
     super.key,
@@ -16,10 +19,18 @@ class ChatPage extends StatefulWidget {
   final String contactId;
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  ConsumerState<ChatPage> createState() => _ChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ChatPageState extends ConsumerState<ChatPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(chatControllerProvider).cancelReplyMessage();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return UnfocusArea(
@@ -51,6 +62,7 @@ class _ChatPageState extends State<ChatPage> {
             Expanded(
               child: ChatBoardListViewWidget(contactId: widget.contactId),
             ),
+            const ChatBoardMessageReplyWidget(),
             ChatPageBottomInputWidget(receiverId: widget.contactId),
           ],
         ),

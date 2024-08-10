@@ -32,7 +32,23 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
   bool isExpanded = false;
 
   @override
+  void initState() {
+    super.initState();
+    _textInputController.addListener(_listenToTextChanged);
+  }
+
+  void _listenToTextChanged() {
+    if (isExpanded) setState(() => isExpanded = false);
+    if (_textInputController.text.isNotEmpty && !_showSendButtonNotifier.value) {
+      _showSendButtonNotifier.value = true;
+    } else if (_textInputController.text.isEmpty && _showSendButtonNotifier.value) {
+      _showSendButtonNotifier.value = false;
+    }
+  }
+
+  @override
   void dispose() {
+    _textInputController.removeListener(_listenToTextChanged);
     _textInputController.dispose();
     _showSendButtonNotifier.dispose();
     super.dispose();
@@ -40,7 +56,6 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
 
   @override
   Widget build(BuildContext context) {
-    final isRecording = ref.watch(chatRecordControllerProvider).isRecording;
     return Container(
       width: context.screenWidth,
       padding: EdgeInsets.symmetric(horizontal: 8.w),
@@ -78,14 +93,6 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
           Expanded(
             child: NoBorderTextField(
               controller: _textInputController,
-              onChanged: (String text) {
-                if (isExpanded) setState(() => isExpanded = false);
-                if (text.isNotEmpty && !_showSendButtonNotifier.value) {
-                  _showSendButtonNotifier.value = true;
-                } else if (text.isEmpty && _showSendButtonNotifier.value) {
-                  _showSendButtonNotifier.value = false;
-                }
-              },
               hintText: "Enter message",
             ),
           ),
@@ -120,6 +127,7 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
                           IconButton(
                             onPressed: () {
                               setState(() => isExpanded = false);
+                              selectAttachImage();
                             },
                             icon: Icon(
                               Icons.camera_alt_outlined,
@@ -139,13 +147,18 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
                           size: 26.r,
                         ),
                       ),
-                IconButton(
-                  onPressed: () => onRecordingAudioPressed(),
-                  icon: Icon(
-                    isRecording ? Icons.stop_circle_outlined : Icons.keyboard_voice_outlined,
-                    color: isRecording ? AppColors.primary : AppColors.iconGrey,
-                    size: 30.r,
-                  ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final isRecording = ref.watch(chatRecordControllerProvider).isRecording;
+                    return IconButton(
+                      onPressed: () => onRecordingAudioPressed(),
+                      icon: Icon(
+                        isRecording ? Icons.stop_circle_outlined : Icons.keyboard_voice_outlined,
+                        color: isRecording ? AppColors.primary : AppColors.iconGrey,
+                        size: 30.r,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

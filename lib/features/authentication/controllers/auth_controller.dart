@@ -18,7 +18,7 @@ final authControllerProvider = Provider((ref) {
   return AuthController(authRepository: authRepository, ref: ref);
 });
 
-final userDataProvider = FutureProvider((ref) async {
+final getUserDataProvider = FutureProvider((ref) async {
   final userController = ref.read(userControllerProvider);
   return userController.getUserData();
 });

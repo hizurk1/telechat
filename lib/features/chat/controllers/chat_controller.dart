@@ -12,6 +12,7 @@ import 'package:telechat/core/error_handler/error.dart';
 import 'package:telechat/core/extensions/string.dart';
 import 'package:telechat/features/chat/models/chat_contact_model.dart';
 import 'package:telechat/features/chat/models/chat_message_model.dart';
+import 'package:telechat/features/chat/providers/message_reply_provider.dart';
 import 'package:telechat/features/chat/repository/chat_repository.dart';
 import 'package:telechat/shared/controllers/user_controller.dart';
 import 'package:telechat/shared/enums/message_enum.dart';
@@ -37,6 +38,10 @@ class ChatController {
     required this.imagePicker,
     required this.ref,
   });
+
+  void cancelReplyMessage() {
+    ref.read(messageReplyProvider.notifier).update((_) => null);
+  }
 
   Stream<List<ChatMessageModel>> getListOfChatMessages({
     required String contactId,
@@ -85,10 +90,13 @@ class ChatController {
       if (senderAndReceiver == null) return;
 
       // Send message
+      final messageReply = ref.read(messageReplyProvider);
+      cancelReplyMessage();
       await chatRepository.sendMessageAsText(
         textMessage: textMessage,
         senderModel: senderAndReceiver.$1,
         receiverModel: senderAndReceiver.$2,
+        messageReply: messageReply,
       );
     } catch (e) {
       logger.e(e.toString());
@@ -106,12 +114,15 @@ class ChatController {
       if (senderAndReceiver == null) return;
 
       // Send message
+      final messageReply = ref.read(messageReplyProvider);
+      cancelReplyMessage();
       await chatRepository.sendMessageAsMediaFile(
         senderModel: senderAndReceiver.$1,
         receiverModel: senderAndReceiver.$2,
         messageType: messageType,
         file: file,
         caption: caption,
+        messageReply: messageReply,
       );
     } on DatabaseError catch (e) {
       logger.e(e.message);
@@ -134,10 +145,13 @@ class ChatController {
       // Send message
       final gifId = gifUrl!.split('-').last;
       final url = "https://i.giphy.com/media/$gifId/200.gif";
+      final messageReply = ref.read(messageReplyProvider);
+      cancelReplyMessage();
       await chatRepository.sendMessageAsGIF(
         gifUrl: url,
         senderModel: senderAndReceiver.$1,
         receiverModel: senderAndReceiver.$2,
+        messageReply: messageReply,
       );
     } catch (e) {
       logger.e(e.toString());

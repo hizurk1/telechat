@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
+import 'package:telechat/features/chat/providers/message_reply_provider.dart';
 import 'package:telechat/shared/enums/message_enum.dart';
 
 class ChatMessageModel {
@@ -11,8 +10,10 @@ class ChatMessageModel {
   final DateTime timeSent;
   final MessageEnum messageType;
   final bool isSeen;
+  final String username;
+  final MessageReply? messageReply;
 
-  const ChatMessageModel({
+  ChatMessageModel({
     required this.messageId,
     required this.senderId,
     required this.receiverId,
@@ -20,6 +21,8 @@ class ChatMessageModel {
     required this.timeSent,
     required this.messageType,
     required this.isSeen,
+    required this.username,
+    required this.messageReply,
   });
 
   Map<String, dynamic> toMap() {
@@ -31,6 +34,8 @@ class ChatMessageModel {
       'timeSent': timeSent.millisecondsSinceEpoch,
       'messageType': messageType.name,
       'isSeen': isSeen,
+      'username': username,
+      'messageReply': messageReply?.toMap(),
     };
   }
 
@@ -43,10 +48,10 @@ class ChatMessageModel {
       timeSent: DateTime.fromMillisecondsSinceEpoch(map['timeSent'] as int),
       messageType: MessageEnum.fromString(map['messageType']),
       isSeen: map['isSeen'] as bool,
+      username: map['username'] as String,
+      messageReply: map['messageReply'] != null
+          ? MessageReply.fromMap(map['messageReply'] as Map<String, dynamic>)
+          : null,
     );
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory ChatMessageModel.fromJson(String source) => ChatMessageModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }
