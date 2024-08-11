@@ -168,29 +168,6 @@ class ChatController {
     }
   }
 
-  Future<File?> pickImageFromGallery() async {
-    try {
-      final file = await imagePicker.pickImage(source: ImageSource.gallery);
-      return file != null ? File(file.path) : null;
-    } catch (e) {
-      logger.e(e.toString());
-      return null;
-    }
-  }
-
-  Future<File?> pickVideoFromGallery() async {
-    try {
-      final file = await imagePicker.pickVideo(
-        source: ImageSource.gallery,
-        maxDuration: Duration(minutes: RemoteConfig.maxVideoLengthInMins),
-      );
-      return file != null ? File(file.path) : null;
-    } catch (e) {
-      logger.e(e.toString());
-      return null;
-    }
-  }
-
   Future<GiphyGif?> pickGIF() async {
     if (RemoteConfig.giphyApiKey.isNotEmpty) {
       try {

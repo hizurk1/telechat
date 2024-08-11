@@ -77,4 +77,24 @@ class ContactController extends StateNotifier<ContactState> {
       searchList: [],
     );
   }
+
+  //* Get contacts
+  Future<List<UserModel>> getContacts() async {
+    try {
+      final userMap = await userRepository.getUserDataFromDB();
+      if (userMap != null) {
+        final userModel = UserModel.fromMap(userMap);
+
+        if (userModel.contactIds.isNotEmpty) {
+          final contactMaps =
+              await contactRepository.getContactsByIds(contactIds: userModel.contactIds);
+          final contactList = contactMaps.map((map) => UserModel.fromMap(map)).toList();
+          return contactList;
+        }
+      }
+    } catch (e) {
+      logger.e(e.toString());
+    }
+    return [];
+  }
 }

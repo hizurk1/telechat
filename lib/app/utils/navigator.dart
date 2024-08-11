@@ -68,7 +68,7 @@ class AppNavigator {
     );
     if (task != null) {
       await task.then((value) async {
-        await Navigator.of(currentContext!).maybePop();
+        Navigator.of(currentContext!).pop();
         if (value is bool && value) {
           onFinish?.call();
         } else if (value is bool && !value) {
@@ -78,7 +78,7 @@ class AppNavigator {
         }
       });
     } else {
-      await Navigator.of(currentContext!).maybePop();
+      Navigator.of(currentContext!).pop();
     }
   }
 }

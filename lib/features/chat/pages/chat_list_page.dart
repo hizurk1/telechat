@@ -9,9 +9,12 @@ import 'package:telechat/core/extensions/list.dart';
 import 'package:telechat/features/chat/controllers/chat_controller.dart';
 import 'package:telechat/features/chat/models/chat_contact_model.dart';
 import 'package:telechat/features/chat/widgets/chat_list/chat_list_contact_item.dart';
+import 'package:telechat/features/chat/widgets/chat_list/chat_list_group_item.dart';
 import 'package:telechat/features/chat/widgets/chat_list/chat_list_loading_contact_item.dart';
 import 'package:telechat/features/chat/widgets/chat_list/chat_list_no_contact.dart';
 import 'package:telechat/features/contact/pages/select_contact_page.dart';
+import 'package:telechat/features/group/controllers/group_controller.dart';
+import 'package:telechat/features/group/models/group_model.dart';
 
 class ChatListPage extends ConsumerStatefulWidget {
   const ChatListPage({super.key});
@@ -45,25 +48,54 @@ class _ChatListPageState extends ConsumerState<ChatListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<List<ChatContactModel>>(
-        stream: ref.watch(chatControllerProvider).getListOfChatContacts(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const ChatListLoadingContactItemWidget();
-          }
-          final List<ChatContactModel>? listOfContacts = snapshot.data;
-          return listOfContacts.isNullOrEmpty
-              ? const ChatListNoContactWidget()
-              : ListView.builder(
-                  controller: _scrollController,
-                  itemCount: listOfContacts!.length,
-                  itemBuilder: (context, index) {
-                    return ChatListContactItemWidget(
-                      chatContact: listOfContacts[index],
-                    );
-                  },
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          StreamBuilder<List<ChatContactModel>>(
+            stream: ref.watch(chatControllerProvider).getListOfChatContacts(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SliverToBoxAdapter(
+                  child: ChatListLoadingContactItemWidget(),
                 );
-        },
+              }
+              final List<ChatContactModel>? listOfContacts = snapshot.data;
+              return listOfContacts.isNullOrEmpty
+                  ? const SliverToBoxAdapter(
+                      child: ChatListNoContactWidget(),
+                    )
+                  : SliverList.builder(
+                      itemCount: listOfContacts!.length,
+                      itemBuilder: (context, index) {
+                        return ChatListContactItemWidget(
+                          chatContact: listOfContacts[index],
+                        );
+                      },
+                    );
+            },
+          ),
+          StreamBuilder<List<GroupModel>>(
+            stream: ref.watch(groupControllerProvider).getListOfGroupChats(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SliverToBoxAdapter(
+                  child: ChatListLoadingContactItemWidget(),
+                );
+              }
+              final List<GroupModel>? listOfGroups = snapshot.data;
+              return listOfGroups.isNullOrEmpty
+                  ? SliverToBoxAdapter(child: Container())
+                  : SliverList.builder(
+                      itemCount: listOfGroups!.length,
+                      itemBuilder: (context, index) {
+                        return ChatListGroupItemWidget(
+                          groupModel: listOfGroups[index],
+                        );
+                      },
+                    );
+            },
+          ),
+        ],
       ),
       floatingActionButton: ValueListenableBuilder(
         valueListenable: visibleFab,

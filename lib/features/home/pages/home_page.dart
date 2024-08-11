@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:telechat/app/themes/app_text_theme.dart';
 import 'package:telechat/features/chat/pages/chat_list_page.dart';
+import 'package:telechat/features/story/pages/story_page.dart';
 import 'package:telechat/shared/controllers/user_controller.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -67,10 +68,10 @@ class _HomePageState extends ConsumerState<HomePage> with WidgetsBindingObserver
             ],
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
-            const ChatListPage(),
-            Container(),
+            ChatListPage(),
+            StoryPage(),
           ],
         ),
       ),

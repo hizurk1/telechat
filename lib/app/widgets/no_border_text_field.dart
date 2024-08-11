@@ -8,16 +8,20 @@ class NoBorderTextField extends StatelessWidget {
     this.hintText,
     this.autofocus = false,
     this.focusNode,
+    this.textCapitalization,
     this.onChanged,
     this.onSubmitted,
+    this.onTap,
   });
 
   final TextEditingController? controller;
   final String? hintText;
   final bool autofocus;
   final FocusNode? focusNode;
+  final TextCapitalization? textCapitalization;
   final void Function(String text)? onChanged;
   final void Function(String text)? onSubmitted;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +30,10 @@ class NoBorderTextField extends StatelessWidget {
       focusNode: focusNode,
       onChanged: onChanged,
       onSubmitted: onSubmitted,
+      onTap: onTap,
       style: AppTextStyle.bodyM.white,
       autofocus: autofocus,
+      textCapitalization: textCapitalization ?? TextCapitalization.sentences,
       decoration: InputDecoration(
         isDense: true,
         border: InputBorder.none,

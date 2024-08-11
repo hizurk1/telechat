@@ -12,6 +12,7 @@ import 'package:telechat/features/authentication/pages/verify_opt_page.dart';
 import 'package:telechat/features/chat/pages/chat_page.dart';
 import 'package:telechat/features/contact/pages/add_contact_page.dart';
 import 'package:telechat/features/contact/pages/select_contact_page.dart';
+import 'package:telechat/features/group/pages/new_group_page.dart';
 import 'package:telechat/features/home/pages/home_page.dart';
 import 'package:telechat/features/intro/pages/intro_page.dart';
 
@@ -55,6 +56,11 @@ class AppRoutes {
           page: ChatPage(
             contactId: args!['contactId'],
           ),
+        );
+
+      case NewGroupPage.route:
+        return _SlidePageRoute(
+          page: const NewGroupPage(),
         );
 
       default:

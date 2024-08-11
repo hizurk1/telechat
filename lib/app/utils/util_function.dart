@@ -2,37 +2,37 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:telechat/app/configs/remote_config.dart';
 import 'package:telechat/core/config/app_log.dart';
 
 class UtilsFunction {
+  static final ImagePicker _imagePicker = ImagePicker();
+
   static void unfocusTextField([void Function()? task]) {
     FocusManager.instance.primaryFocus?.unfocus();
     task?.call();
   }
 
   static Future<File?> pickImageFromGallery() async {
-    File? image;
     try {
-      final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (pickedImage != null) {
-        image = File(pickedImage.path);
-      }
+      final file = await _imagePicker.pickImage(source: ImageSource.gallery);
+      return file != null ? File(file.path) : null;
     } catch (e) {
-      logger.e("pickImageFromGallery: $e");
+      logger.e(e.toString());
+      return null;
     }
-    return image;
   }
 
-  static Future<File?> captureImageFromCamera() async {
-    File? image;
+  static Future<File?> pickVideoFromGallery() async {
     try {
-      final pickedImage = await ImagePicker().pickImage(source: ImageSource.camera);
-      if (pickedImage != null) {
-        image = File(pickedImage.path);
-      }
+      final file = await _imagePicker.pickVideo(
+        source: ImageSource.gallery,
+        maxDuration: Duration(minutes: RemoteConfig.maxVideoLengthInMins),
+      );
+      return file != null ? File(file.path) : null;
     } catch (e) {
-      logger.e("captureImageFromCamera: $e");
+      logger.e(e.toString());
+      return null;
     }
-    return image;
   }
 }

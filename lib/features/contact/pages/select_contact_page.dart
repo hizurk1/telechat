@@ -17,6 +17,7 @@ import 'package:telechat/features/contact/pages/add_contact_page.dart';
 import 'package:telechat/features/contact/widgets/contact_item_with_avatar.dart';
 import 'package:telechat/features/contact/widgets/empty_contact.dart';
 import 'package:telechat/features/contact/widgets/loading_contact.dart';
+import 'package:telechat/features/group/pages/new_group_page.dart';
 
 class SelectContactPage extends ConsumerStatefulWidget {
   static const String route = "/select-contact";
@@ -82,7 +83,7 @@ class _SelectContactPageState extends ConsumerState<SelectContactPage> {
             builder: (context, bool isShowSearch, child) {
               return isShowSearch
                   ? child!
-                  : Text("Select contact", style: AppTextStyle.bodyL.white);
+                  : Text("Create a new chat", style: AppTextStyle.bodyL.white);
             },
           ),
           actions: [
@@ -116,32 +117,59 @@ class _SelectContactPageState extends ConsumerState<SelectContactPage> {
             ),
           ],
         ),
-        body: switch (state.status) {
-          ContactStatus.loading => const LoadingContactWidget(),
-          ContactStatus.success => state.searchList.isEmpty
-              ? const EmptyContactWidget()
-              : ListView.separated(
-                  itemCount: state.searchList.length,
-                  padding: const EdgeInsets.symmetric(vertical: 1),
-                  separatorBuilder: (context, index) => const Gap(1),
-                  itemBuilder: (context, index) {
-                    final contact = state.searchList[index];
-                    return ContactItemWidget(
-                      onTap: () {
-                        Navigator.pushReplacementNamed(context, ChatPage.route, arguments: {
-                          'contactId': contact.uid,
-                        });
-                      },
-                      name: contact.name,
-                      subText: contact.phoneNumber,
-                      imageUrl: contact.profileImage,
-                    );
-                  },
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Gap(1),
+            ListTile(
+              onTap: () => Navigator.pushReplacementNamed(context, NewGroupPage.route),
+              tileColor: AppColors.card,
+              leading: Padding(
+                padding: EdgeInsets.only(left: 8.w),
+                child: Icon(
+                  Icons.group_add_outlined,
+                  color: AppColors.iconGrey,
+                  size: 24.r,
                 ),
-          ContactStatus.error => ErrorPage(
-              onRetry: () => ref.read(contactControllerProvider.notifier).fetchContacts(),
-            )
-        },
+              ),
+              title: Padding(
+                padding: EdgeInsets.only(left: 8.w),
+                child: Text(
+                  "New group",
+                  style: AppTextStyle.bodyM.white,
+                ),
+              ),
+            ),
+            Expanded(
+              child: switch (state.status) {
+                ContactStatus.loading => const LoadingContactWidget(),
+                ContactStatus.success => state.searchList.isEmpty
+                    ? const EmptyContactWidget()
+                    : ListView.separated(
+                        itemCount: state.searchList.length,
+                        padding: const EdgeInsets.symmetric(vertical: 1),
+                        separatorBuilder: (context, index) => const Gap(1),
+                        itemBuilder: (context, index) {
+                          final contact = state.searchList[index];
+                          return ContactItemWidget(
+                            onTap: () {
+                              Navigator.pushReplacementNamed(context, ChatPage.route, arguments: {
+                                'contactId': contact.uid,
+                              });
+                            },
+                            name: contact.name,
+                            subText: contact.phoneNumber,
+                            imageUrl: contact.profileImage,
+                          );
+                        },
+                      ),
+                ContactStatus.error => ErrorPage(
+                    onRetry: () => ref.read(contactControllerProvider.notifier).fetchContacts(),
+                  )
+              },
+            ),
+          ],
+        ),
         floatingActionButton: ValueListenableBuilder(
           valueListenable: visibleFab,
           child: FloatingActionButton(

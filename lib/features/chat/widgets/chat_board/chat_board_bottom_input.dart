@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/themes/app_color.dart';
 import 'package:telechat/app/utils/navigator.dart';
+import 'package:telechat/app/utils/util_function.dart';
 import 'package:telechat/app/widgets/gap.dart';
 import 'package:telechat/app/widgets/no_border_text_field.dart';
 import 'package:telechat/core/extensions/build_context.dart';
@@ -213,7 +214,7 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
 
   selectAttachVideo() async {
     media = null;
-    final pickedVideo = await ref.read(chatControllerProvider).pickVideoFromGallery();
+    final pickedVideo = await UtilsFunction.pickVideoFromGallery();
     if (pickedVideo != null && mounted) {
       media = pickedVideo;
       ChatBoardSendMediaDialog(
@@ -228,7 +229,7 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
 
   selectAttachImage() async {
     media = null;
-    final pickedImage = await ref.read(chatControllerProvider).pickImageFromGallery();
+    final pickedImage = await UtilsFunction.pickImageFromGallery();
     if (pickedImage != null && mounted) {
       media = pickedImage;
       ChatBoardSendMediaDialog(
