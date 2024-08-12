@@ -15,6 +15,7 @@ import 'package:telechat/features/chat/widgets/chat_list/chat_list_no_contact.da
 import 'package:telechat/features/contact/pages/select_contact_page.dart';
 import 'package:telechat/features/group/controllers/group_controller.dart';
 import 'package:telechat/features/group/models/group_model.dart';
+import 'package:telechat/shared/controllers/user_controller.dart';
 
 class ChatListPage extends ConsumerStatefulWidget {
   const ChatListPage({super.key});
@@ -47,6 +48,7 @@ class _ChatListPageState extends ConsumerState<ChatListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final uid = ref.read(userControllerProvider).currentUser!.uid;
     return Scaffold(
       body: CustomScrollView(
         controller: _scrollController,
@@ -60,26 +62,35 @@ class _ChatListPageState extends ConsumerState<ChatListPage> {
                 );
               }
               final List<ChatContactModel>? listOfContacts = snapshot.data;
-              return listOfContacts.isNullOrEmpty
-                  ? const SliverToBoxAdapter(
-                      child: ChatListNoContactWidget(),
-                    )
-                  : SliverList.builder(
-                      itemCount: listOfContacts!.length,
-                      itemBuilder: (context, index) {
-                        return ChatListContactItemWidget(
-                          chatContact: listOfContacts[index],
-                        );
-                      },
-                    );
+              if (listOfContacts == null) {
+                return const SliverToBoxAdapter(
+                  child: ChatListNoContactWidget(),
+                );
+              }
+              final contacts = listOfContacts.where((e) {
+                return e.createdUserId == uid || e.lastSenderId.isNotEmpty;
+              }).toList();
+              if (contacts.isEmpty) {
+                return const SliverToBoxAdapter(
+                  child: ChatListNoContactWidget(),
+                );
+              }
+              return SliverList.builder(
+                itemCount: contacts.length,
+                itemBuilder: (context, index) {
+                  return ChatListContactItemWidget(
+                    chatContact: contacts[index],
+                  );
+                },
+              );
             },
           ),
           StreamBuilder<List<GroupModel>>(
             stream: ref.watch(groupControllerProvider).getListOfGroupChats(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const SliverToBoxAdapter(
-                  child: ChatListLoadingContactItemWidget(),
+                return SliverToBoxAdapter(
+                  child: Container(),
                 );
               }
               final List<GroupModel>? listOfGroups = snapshot.data;

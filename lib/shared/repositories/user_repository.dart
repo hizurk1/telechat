@@ -25,6 +25,24 @@ class UserRepository {
 
   User? get currentUser => auth.currentUser;
 
+  Future<List<Map<String, dynamic>>?> getListOfUserDataByIds(List<String> userIds) async {
+    try {
+      List<Map<String, dynamic>> userDataList = [];
+      for (String userId in userIds) {
+        DocumentSnapshot userSnapshot =
+            await database.collection(Collections.users).doc(userId).get();
+
+        if (userSnapshot.exists) {
+          userDataList.add(userSnapshot.data() as Map<String, dynamic>);
+        }
+      }
+      return userDataList;
+    } catch (e) {
+      logger.e(e.toString());
+      return null;
+    }
+  }
+
   Future<Map<String, dynamic>?> getUserDataByIdFromDB(String userId) async {
     try {
       final userData = await database.collection(Collections.users).doc(userId).get();

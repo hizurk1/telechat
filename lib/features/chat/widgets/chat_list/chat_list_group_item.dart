@@ -3,6 +3,7 @@ import 'package:telechat/app/themes/app_color.dart';
 import 'package:telechat/app/themes/app_text_theme.dart';
 import 'package:telechat/app/widgets/cached_network_image.dart';
 import 'package:telechat/core/extensions/date_time.dart';
+import 'package:telechat/features/chat/pages/chat_page.dart';
 import 'package:telechat/features/group/models/group_model.dart';
 
 class ChatListGroupItemWidget extends StatelessWidget {
@@ -12,7 +13,17 @@ class ChatListGroupItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          ChatPage.route,
+          arguments: {
+            "chatId": groupModel.groupId,
+            "memberIds": groupModel.memberIds,
+            "groupName": groupModel.groupName,
+          },
+        );
+      },
       tileColor: AppColors.cardMessage,
       leading: CachedNetworkImageCustom.avatar(
         imageUrl: groupModel.groupAvatar,

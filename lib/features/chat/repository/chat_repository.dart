@@ -34,64 +34,97 @@ class ChatRepository {
     required this.ref,
   });
 
+  Future<ChatContactModel?> createChat({
+    required String contactId,
+  }) async {
+    try {
+      final chatId = const Uuid().v1();
+
+      final chatModel = ChatContactModel(
+        chatId: chatId,
+        memberIds: [auth.currentUser!.uid, contactId],
+        createdUserId: auth.currentUser!.uid,
+        lastSenderId: '',
+        timeSent: DateTime.now(),
+        lastMessage: '',
+      );
+
+      await database.collection(Collections.chats).doc(chatId).set(chatModel.toMap());
+      return chatModel;
+    } catch (e) {
+      logger.e(e.toString());
+      return null;
+    }
+  }
+
   Future<void> updateChatMessageAsSeen({
-    required String receiverId,
+    required String chatId,
     required String messageId,
   }) async {
     try {
       final Map<String, bool> updatedMap = {
         "isSeen": true,
       };
-      await Future.wait([
-        // For sender
-        database
-            .collection(Collections.users)
-            .doc(auth.currentUser?.uid)
-            .collection(Collections.chats)
-            .doc(receiverId)
-            .collection(Collections.messages)
-            .doc(messageId)
-            .update(updatedMap),
-        // For receiver
-        database
-            .collection(Collections.users)
-            .doc(receiverId)
-            .collection(Collections.chats)
-            .doc(auth.currentUser?.uid)
-            .collection(Collections.messages)
-            .doc(messageId)
-            .update(updatedMap),
-      ]);
+      await database
+          .collection(Collections.chats)
+          .doc(chatId)
+          .collection(Collections.messages)
+          .doc(messageId)
+          .update(updatedMap);
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
+
+  Future<void> sendMessageAsText({
+    required String chatId,
+    required UserModel senderModel,
+    required String textMessage,
+    required MessageReply? messageReply,
+  }) async {
+    try {
+      final timeSent = DateTime.now();
+
+      await _updateLastMessageInChat(
+        chatId: chatId,
+        timeSent: timeSent,
+        lastMessage: textMessage,
+      );
+
+      await _saveMessageToMessagesSubCollection(
+        chatId: chatId,
+        senderModel: senderModel,
+        timeSent: timeSent,
+        messageType: MessageEnum.text,
+        message: textMessage,
+        messageReply: messageReply,
+      );
     } catch (e) {
       logger.e(e.toString());
     }
   }
 
   Future<void> sendMessageAsGIF({
+    required String chatId,
     required String gifUrl,
-    required UserModel receiverModel,
     required UserModel senderModel,
     required MessageReply? messageReply,
   }) async {
     try {
       final timeSent = DateTime.now();
 
-      //! /users/{senderId:receiverId}/chats/{receiverId:senderId}/data
-      await _saveDataToContactsSubCollection(
-        senderModel: senderModel,
-        receiverModel: receiverModel,
+      await _updateLastMessageInChat(
+        chatId: chatId,
         timeSent: timeSent,
         lastMessage: MessageEnum.gif.message,
       );
 
-      //! /users/{senderId:receiverId}/chats/{receiver:sender}/messages/{messageId}/data
       await _saveMessageToMessagesSubCollection(
-        senderId: senderModel.uid,
-        receiverId: receiverModel.uid,
+        chatId: chatId,
+        senderModel: senderModel,
         timeSent: timeSent,
         messageType: MessageEnum.gif,
         message: gifUrl,
-        username: senderModel.name,
         messageReply: messageReply,
       );
     } catch (e) {
@@ -100,9 +133,9 @@ class ChatRepository {
   }
 
   Future<void> sendMessageAsMediaFile({
-    required MessageEnum messageType,
-    required UserModel receiverModel,
+    required String chatId,
     required UserModel senderModel,
+    required MessageEnum messageType,
     required File file,
     required MessageReply? messageReply,
     String? caption,
@@ -112,26 +145,24 @@ class ChatRepository {
       final messageId = const Uuid().v1();
 
       final imageUrl = await ref.read(cloudStorageServiceProvider).storeFileToStorage(
-            path: "chats/${messageType.name}/${senderModel.uid}/${receiverModel.uid}/$messageId",
+            path: "chats/$chatId/$messageId",
             file: file,
           );
 
       if (imageUrl != null) {
-        await _saveDataToContactsSubCollection(
-          senderModel: senderModel,
-          receiverModel: receiverModel,
+        await _updateLastMessageInChat(
+          chatId: chatId,
           timeSent: timeSent,
           lastMessage: messageType.message,
         );
 
         final message = caption != null ? "$imageUrl${AppConst.captionSpliter}$caption" : imageUrl;
         await _saveMessageToMessagesSubCollection(
-          senderId: senderModel.uid,
-          receiverId: receiverModel.uid,
+          chatId: chatId,
+          senderModel: senderModel,
           timeSent: timeSent,
           message: message,
           messageType: messageType,
-          username: senderModel.name,
           messageReply: messageReply,
         );
       } else {
@@ -143,13 +174,11 @@ class ChatRepository {
   }
 
   Stream<List<Map<String, dynamic>>> getListOfChatMessages({
-    required String contactId,
+    required String chatId,
   }) {
     return database
-        .collection(Collections.users)
-        .doc(auth.currentUser?.uid)
         .collection(Collections.chats)
-        .doc(contactId)
+        .doc(chatId)
         .collection(Collections.messages)
         .orderBy("timeSent", descending: true)
         .snapshots()
@@ -160,93 +189,26 @@ class ChatRepository {
 
   Stream<List<Map<String, dynamic>>> getListOfChatContacts() {
     return database
-        .collection(Collections.users)
-        .doc(auth.currentUser?.uid)
         .collection(Collections.chats)
+        .where("memberIds", arrayContains: auth.currentUser!.uid)
         .snapshots()
         .map(
           (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
         );
   }
 
-  Future<void> sendMessageAsText({
-    required String textMessage,
-    required UserModel receiverModel,
-    required UserModel senderModel,
-    required MessageReply? messageReply,
-  }) async {
-    try {
-      final timeSent = DateTime.now();
-
-      //! /users/{senderId:receiverId}/chats/{receiverId:senderId}/data
-      await _saveDataToContactsSubCollection(
-        senderModel: senderModel,
-        receiverModel: receiverModel,
-        timeSent: timeSent,
-        lastMessage: textMessage,
-      );
-
-      //! /users/{senderId:receiverId}/chats/{receiver:sender}/messages/{messageId}/data
-      await _saveMessageToMessagesSubCollection(
-        senderId: senderModel.uid,
-        receiverId: receiverModel.uid,
-        timeSent: timeSent,
-        messageType: MessageEnum.text,
-        message: textMessage,
-        username: senderModel.name,
-        messageReply: messageReply,
-      );
-    } catch (e) {
-      logger.e(e.toString());
-    }
-  }
-
-  /*
-    When sending a message, it's store the message's data in 2 sides: sender and receiver.
-  */
-
   /// This will be shown on the home screen
-  Future<void> _saveDataToContactsSubCollection({
-    required UserModel senderModel,
-    required UserModel receiverModel,
+  Future<void> _updateLastMessageInChat({
+    required String chatId,
     required DateTime timeSent,
     required String lastMessage,
   }) async {
     try {
-      //* Store chat contact message data for `Sender` user.
-      final senderChatContact = ChatContactModel(
-        contactId: receiverModel.uid,
-        name: receiverModel.name,
-        profileImg: receiverModel.profileImage,
-        timeSent: timeSent,
-        lastMessage: lastMessage,
-      );
-
-      //* Store chat contact message data for `Receiver` user.
-      final receiverChatContact = ChatContactModel(
-        contactId: senderModel.uid,
-        name: senderModel.name,
-        profileImg: senderModel.profileImage,
-        timeSent: timeSent,
-        lastMessage: lastMessage,
-      );
-
-      await Future.wait([
-        // For sender
-        database
-            .collection(Collections.users)
-            .doc(senderModel.uid)
-            .collection(Collections.chats)
-            .doc(receiverModel.uid)
-            .set(senderChatContact.toMap()),
-        // For receiver
-        database
-            .collection(Collections.users)
-            .doc(receiverModel.uid)
-            .collection(Collections.chats)
-            .doc(senderModel.uid)
-            .set(receiverChatContact.toMap()),
-      ]);
+      await database.collection(Collections.chats).doc(chatId).update({
+        "lastSenderId": auth.currentUser!.uid,
+        "timeSent": timeSent.millisecondsSinceEpoch,
+        "lastMessage": lastMessage,
+      });
     } catch (e) {
       logger.e(e.toString());
     }
@@ -254,48 +216,32 @@ class ChatRepository {
 
   /// This will be shown on chat board screen
   Future<void> _saveMessageToMessagesSubCollection({
-    required String senderId,
-    required String receiverId,
+    required String chatId,
+    required UserModel senderModel,
     required DateTime timeSent,
     required String message,
     required MessageEnum messageType,
-    required String username,
     required MessageReply? messageReply,
   }) async {
     try {
       final messageId = const Uuid().v1();
       final messageModel = ChatMessageModel(
         messageId: messageId,
-        senderId: senderId,
-        receiverId: receiverId,
+        senderId: senderModel.uid,
+        senderName: senderModel.name,
         textMessage: message,
         timeSent: timeSent,
         messageType: messageType,
         isSeen: false,
-        username: username,
         messageReply: messageReply,
       );
 
-      await Future.wait([
-        // For sender
-        database
-            .collection(Collections.users)
-            .doc(senderId)
-            .collection(Collections.chats)
-            .doc(receiverId)
-            .collection(Collections.messages)
-            .doc(messageId)
-            .set(messageModel.toMap()),
-        // For receiver
-        database
-            .collection(Collections.users)
-            .doc(receiverId)
-            .collection(Collections.chats)
-            .doc(senderId)
-            .collection(Collections.messages)
-            .doc(messageId)
-            .set(messageModel.toMap()),
-      ]);
+      await database
+          .collection(Collections.chats)
+          .doc(chatId)
+          .collection(Collections.messages)
+          .doc(messageId)
+          .set(messageModel.toMap());
     } catch (e) {
       logger.e(e.toString());
     }

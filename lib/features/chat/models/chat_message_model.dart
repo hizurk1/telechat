@@ -5,23 +5,21 @@ import 'package:telechat/shared/enums/message_enum.dart';
 class ChatMessageModel {
   final String messageId;
   final String senderId;
-  final String receiverId;
+  final String senderName;
   final String textMessage;
   final DateTime timeSent;
   final MessageEnum messageType;
   final bool isSeen;
-  final String username;
   final MessageReply? messageReply;
 
   ChatMessageModel({
     required this.messageId,
     required this.senderId,
-    required this.receiverId,
+    required this.senderName,
     required this.textMessage,
     required this.timeSent,
     required this.messageType,
     required this.isSeen,
-    required this.username,
     required this.messageReply,
   });
 
@@ -29,12 +27,11 @@ class ChatMessageModel {
     return <String, dynamic>{
       'messageId': messageId,
       'senderId': senderId,
-      'receiverId': receiverId,
+      'senderName': senderName,
       'textMessage': textMessage,
       'timeSent': timeSent.millisecondsSinceEpoch,
       'messageType': messageType.name,
       'isSeen': isSeen,
-      'username': username,
       'messageReply': messageReply?.toMap(),
     };
   }
@@ -43,12 +40,11 @@ class ChatMessageModel {
     return ChatMessageModel(
       messageId: map['messageId'] as String,
       senderId: map['senderId'] as String,
-      receiverId: map['receiverId'] as String,
+      senderName: map['senderName'] as String,
       textMessage: map['textMessage'] as String,
       timeSent: DateTime.fromMillisecondsSinceEpoch(map['timeSent'] as int),
       messageType: MessageEnum.fromString(map['messageType']),
       isSeen: map['isSeen'] as bool,
-      username: map['username'] as String,
       messageReply: map['messageReply'] != null
           ? MessageReply.fromMap(map['messageReply'] as Map<String, dynamic>)
           : null,

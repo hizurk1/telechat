@@ -12,14 +12,16 @@ import 'package:telechat/core/extensions/build_context.dart';
 import 'package:telechat/features/chat/controllers/chat_controller.dart';
 import 'package:telechat/features/chat/controllers/chat_record_controller.dart';
 import 'package:telechat/features/chat/widgets/chat_board/chat_board_send_image_dialog.dart';
+import 'package:telechat/features/group/controllers/group_controller.dart';
 import 'package:telechat/shared/enums/message_enum.dart';
 
 class ChatPageBottomInputWidget extends ConsumerStatefulWidget {
-  final String receiverId;
-
+  final String chatId;
+  final bool isGroup;
   const ChatPageBottomInputWidget({
     super.key,
-    required this.receiverId,
+    required this.chatId,
+    required this.isGroup,
   });
 
   @override
@@ -73,17 +75,7 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
       child: Row(
         children: [
           IconButton(
-            onPressed: () {
-              if (isExpanded) setState(() => isExpanded = false);
-              ref.read(chatControllerProvider).pickGIF().then((gif) {
-                if (gif != null) {
-                  ref.read(chatControllerProvider).sendMessageAsGIF(
-                        receiverId: widget.receiverId,
-                        gifUrl: gif.url,
-                      );
-                }
-              });
-            },
+            onPressed: () => onSelectGIF(),
             icon: Icon(
               Icons.gif_box_outlined,
               color: AppColors.iconGrey,
@@ -184,6 +176,24 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
     );
   }
 
+  onSelectGIF() {
+    if (isExpanded) setState(() => isExpanded = false);
+    ref.read(chatControllerProvider).pickGIF().then((gif) {
+      if (gif == null) return;
+      if (widget.isGroup) {
+        ref.read(groupControllerProvider).sendMessageAsGIFInGroup(
+              groupId: widget.chatId,
+              gifUrl: gif.url,
+            );
+      } else {
+        ref.read(chatControllerProvider).sendMessageAsGIF(
+              chatId: widget.chatId,
+              gifUrl: gif.url,
+            );
+      }
+    });
+  }
+
   onRecordingAudioPressed() async {
     if (isExpanded) setState(() => isExpanded = false);
 
@@ -196,11 +206,19 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
     if (state.isRecording) {
       await notifier.stopRecording();
       if (state.audioPath.isNotEmpty) {
-        await ref.read(chatControllerProvider).sendMessageAsMediaFile(
-              messageType: MessageEnum.audio,
-              receiverId: widget.receiverId,
-              file: File(state.audioPath),
-            );
+        if (widget.isGroup) {
+          await ref.read(groupControllerProvider).sendMessageAsMediaFileInGroup(
+                groupId: widget.chatId,
+                messageType: MessageEnum.audio,
+                file: File(state.audioPath),
+              );
+        } else {
+          await ref.read(chatControllerProvider).sendMessageAsMediaFile(
+                chatId: widget.chatId,
+                messageType: MessageEnum.audio,
+                file: File(state.audioPath),
+              );
+        }
       } else {
         AppNavigator.showMessage(
           "Can not find the audio file. Please try again.",
@@ -243,10 +261,18 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
   }
 
   sendMediaFileMessage(String? caption, MessageEnum type) async {
-    if (media != null) {
-      await ref.read(chatControllerProvider).sendMessageAsMediaFile(
+    if (media == null) return;
+    if (widget.isGroup) {
+      await ref.read(groupControllerProvider).sendMessageAsMediaFileInGroup(
+            groupId: widget.chatId,
             messageType: type,
-            receiverId: widget.receiverId,
+            file: media!,
+            caption: caption,
+          );
+    } else {
+      await ref.read(chatControllerProvider).sendMessageAsMediaFile(
+            chatId: widget.chatId,
+            messageType: type,
             file: media!,
             caption: caption,
           );
@@ -259,9 +285,16 @@ class _ChatPageBottomInputWidgetState extends ConsumerState<ChatPageBottomInputW
 
     final textMessage = _textInputController.text.trim();
     _textInputController.clear();
-    await ref.read(chatControllerProvider).sendMessageAsText(
-          receiverId: widget.receiverId,
-          textMessage: textMessage,
-        );
+    if (widget.isGroup) {
+      await ref.read(groupControllerProvider).sendMessageAsTextInGroup(
+            groupId: widget.chatId,
+            textMessage: textMessage,
+          );
+    } else {
+      await ref.read(chatControllerProvider).sendMessageAsText(
+            chatId: widget.chatId,
+            textMessage: textMessage,
+          );
+    }
   }
 }

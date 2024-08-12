@@ -54,7 +54,9 @@ class AppRoutes {
       case ChatPage.route:
         return _SlidePageRoute(
           page: ChatPage(
-            contactId: args!['contactId'],
+            chatId: args!['chatId'],
+            memberIds: args['memberIds'],
+            groupName: args['groupName'],
           ),
         );
 

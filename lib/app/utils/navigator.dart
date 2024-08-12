@@ -52,7 +52,7 @@ class AppNavigator {
   /// If [task] is return bool value, onFinish will be called if value is `true`
   static Future showLoading({
     double size = 30,
-    required Future? task,
+    Future? task,
     Function()? onFinish,
     Function()? onFailed,
   }) async {
@@ -77,8 +77,6 @@ class AppNavigator {
           onFinish?.call();
         }
       });
-    } else {
-      Navigator.of(currentContext!).pop();
     }
   }
 }

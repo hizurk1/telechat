@@ -16,8 +16,6 @@ import 'package:telechat/features/chat/providers/message_reply_provider.dart';
 import 'package:telechat/features/chat/repository/chat_repository.dart';
 import 'package:telechat/shared/controllers/user_controller.dart';
 import 'package:telechat/shared/enums/message_enum.dart';
-import 'package:telechat/shared/models/user_model.dart';
-import 'package:telechat/shared/repositories/user_repository.dart';
 
 final chatControllerProvider = Provider((ref) {
   final chatRepository = ref.read(chatRepositoryProvider);
@@ -39,12 +37,18 @@ class ChatController {
     required this.ref,
   });
 
+  Future<ChatContactModel?> createChat({
+    required String contactId,
+  }) async {
+    return await chatRepository.createChat(contactId: contactId);
+  }
+
   Future<void> updateChatMessageAsSeen({
-    required String receiverId,
+    required String chatId,
     required String messageId,
   }) async {
     await chatRepository.updateChatMessageAsSeen(
-      receiverId: receiverId,
+      chatId: chatId,
       messageId: messageId,
     );
   }
@@ -54,9 +58,9 @@ class ChatController {
   }
 
   Stream<List<ChatMessageModel>> getListOfChatMessages({
-    required String contactId,
+    required String chatId,
   }) {
-    return chatRepository.getListOfChatMessages(contactId: contactId).map((listOfMaps) {
+    return chatRepository.getListOfChatMessages(chatId: chatId).map((listOfMaps) {
       return listOfMaps.map((map) => ChatMessageModel.fromMap(map)).toList();
     });
   }
@@ -67,45 +71,21 @@ class ChatController {
     });
   }
 
-  Future<(UserModel, UserModel)?> _getSenderAndReceiverModel(String receiverId) async {
-    try {
-      final senderModel = await ref.read(userControllerProvider).getUserData();
-      if (senderModel == null) {
-        logger.e("senderModel == null");
-        return null;
-      }
-
-      // Get receiver data model
-      final receiverUserMap =
-          await ref.read(userRepositoryProvider).getUserDataByIdFromDB(receiverId);
-      if (receiverUserMap == null) {
-        logger.e("receiverUserMap == null");
-        return null;
-      }
-      final receiverModel = UserModel.fromMap(receiverUserMap);
-
-      return (senderModel, receiverModel);
-    } catch (e) {
-      logger.e(e.toString());
-      return null;
-    }
-  }
-
   Future<void> sendMessageAsText({
-    required String receiverId,
+    required String chatId,
     required String textMessage,
   }) async {
     try {
-      final senderAndReceiver = await _getSenderAndReceiverModel(receiverId);
-      if (senderAndReceiver == null) return;
+      final senderModel = await ref.read(userControllerProvider).getUserData();
+      if (senderModel == null) return;
 
       // Send message
       final messageReply = ref.read(messageReplyProvider);
       cancelReplyMessage();
       await chatRepository.sendMessageAsText(
+        chatId: chatId,
         textMessage: textMessage,
-        senderModel: senderAndReceiver.$1,
-        receiverModel: senderAndReceiver.$2,
+        senderModel: senderModel,
         messageReply: messageReply,
       );
     } catch (e) {
@@ -114,21 +94,21 @@ class ChatController {
   }
 
   Future<void> sendMessageAsMediaFile({
+    required String chatId,
     required MessageEnum messageType,
-    required String receiverId,
     required File file,
     String? caption,
   }) async {
     try {
-      final senderAndReceiver = await _getSenderAndReceiverModel(receiverId);
-      if (senderAndReceiver == null) return;
+      final senderModel = await ref.read(userControllerProvider).getUserData();
+      if (senderModel == null) return;
 
       // Send message
       final messageReply = ref.read(messageReplyProvider);
       cancelReplyMessage();
       await chatRepository.sendMessageAsMediaFile(
-        senderModel: senderAndReceiver.$1,
-        receiverModel: senderAndReceiver.$2,
+        chatId: chatId,
+        senderModel: senderModel,
         messageType: messageType,
         file: file,
         caption: caption,
@@ -143,14 +123,14 @@ class ChatController {
   }
 
   Future<void> sendMessageAsGIF({
-    required String receiverId,
+    required String chatId,
     required String? gifUrl,
   }) async {
     if (gifUrl.isNullOrEmpty) return;
 
     try {
-      final senderAndReceiver = await _getSenderAndReceiverModel(receiverId);
-      if (senderAndReceiver == null) return;
+      final senderModel = await ref.read(userControllerProvider).getUserData();
+      if (senderModel == null) return;
 
       // Send message
       final gifId = gifUrl!.split('-').last;
@@ -158,9 +138,9 @@ class ChatController {
       final messageReply = ref.read(messageReplyProvider);
       cancelReplyMessage();
       await chatRepository.sendMessageAsGIF(
+        chatId: chatId,
         gifUrl: url,
-        senderModel: senderAndReceiver.$1,
-        receiverModel: senderAndReceiver.$2,
+        senderModel: senderModel,
         messageReply: messageReply,
       );
     } catch (e) {

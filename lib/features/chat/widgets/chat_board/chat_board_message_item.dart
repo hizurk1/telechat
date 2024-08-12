@@ -21,6 +21,7 @@ part 'chat_board_message_item_reply.dart';
 class ChatBoardMessageItemWidget extends ConsumerWidget {
   final String username;
   final String message;
+  final String? avatar;
   final DateTime timeSent;
   final MessageEnum messageType;
   final bool isMe;
@@ -31,6 +32,7 @@ class ChatBoardMessageItemWidget extends ConsumerWidget {
     super.key,
     required this.username,
     required this.message,
+    required this.avatar,
     required this.timeSent,
     required this.messageType,
     required this.isMe,
@@ -50,11 +52,19 @@ class ChatBoardMessageItemWidget extends ConsumerWidget {
       }),
       child: Row(
         mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          if (avatar != null && !isMe) ...[
+            CachedNetworkImageCustom.avatar(
+              imageUrl: avatar!,
+              size: 40,
+            ),
+            const Gap.medium(),
+          ],
           IntrinsicWidth(
             child: Container(
               constraints: BoxConstraints(
-                maxWidth: context.screenWidth - 45.w,
+                maxWidth: context.screenWidth * 0.8,
               ),
               padding: EdgeInsets.all(4.r),
               decoration: BoxDecoration(

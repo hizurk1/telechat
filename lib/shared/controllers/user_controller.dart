@@ -40,6 +40,23 @@ class UserController {
     return userModel;
   }
 
+  //* Get user data by id
+  Future<UserModel?> getUserDataById(String uid) async {
+    final userData = await userRepository.getUserDataByIdFromDB(uid);
+
+    UserModel? userModel;
+    if (userData != null) {
+      userModel = UserModel.fromMap(userData);
+    }
+    return userModel;
+  }
+
+  //* Get user datas by ids
+  Future<List<UserModel>?> getListOfUserDataByIds(List<String> userIds) async {
+    final listOfData = await userRepository.getListOfUserDataByIds(userIds);
+    return listOfData?.map((e) => UserModel.fromMap(e)).toList();
+  }
+
   //* Update user info
 
   Future<void> updateUserData({
