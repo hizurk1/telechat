@@ -65,7 +65,7 @@ class _ChatBoardListViewWidgetState extends ConsumerState<ChatBoardListViewWidge
                     itemBuilder: (context, int index) {
                       final chatMessage = chatMessages[index];
 
-                      if (!widget.isGroup && !chatMessage.isSeen && chatMessage.senderId != uid) {
+                      if (!chatMessage.isSeen && chatMessage.senderId != uid) {
                         ref.read(chatControllerProvider).updateChatMessageAsSeen(
                               chatId: widget.chatId,
                               messageId: chatMessage.messageId,
