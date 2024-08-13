@@ -9,6 +9,7 @@ import 'package:telechat/app/widgets/gap.dart';
 import 'package:telechat/features/authentication/pages/fill_user_info_page.dart';
 import 'package:telechat/features/authentication/pages/sign_in_page.dart';
 import 'package:telechat/features/authentication/pages/verify_opt_page.dart';
+import 'package:telechat/features/call/pages/call_page.dart';
 import 'package:telechat/features/chat/pages/chat_page.dart';
 import 'package:telechat/features/contact/pages/add_contact_page.dart';
 import 'package:telechat/features/contact/pages/select_contact_page.dart';
@@ -63,6 +64,15 @@ class AppRoutes {
       case NewGroupPage.route:
         return _SlidePageRoute(
           page: const NewGroupPage(),
+        );
+        
+      case CallPage.route:
+        return _SlidePageRoute(
+          page: CallPage(
+            channelId: args?["channelId"],
+            callModel: args?["callModel"],
+            isGroup: args?["isGroup"],
+          ),
         );
 
       default:

@@ -10,14 +10,14 @@ class RemoteConfig {
     try {
       await _remoteConfig.setConfigSettings(
         RemoteConfigSettings(
-          fetchTimeout: const Duration(seconds: 30),
-          minimumFetchInterval: const Duration(seconds: 30),
+          fetchTimeout: const Duration(seconds: 60),
+          minimumFetchInterval: const Duration(seconds: 60),
         ),
       );
       await _remoteConfig.fetchAndActivate().timeout(
-        const Duration(seconds: 30),
+        const Duration(seconds: 60),
         onTimeout: () {
-          logger.e("fetchAndActivate=timeout(30s)");
+          logger.e("fetchAndActivate=timeout(60s)");
           return false;
         },
       );
@@ -32,6 +32,9 @@ class RemoteConfig {
     otpTimeOutInSeconds = _remoteConfig.getInt("otpTimeOutInSeconds");
     maxVideoLengthInMins = _remoteConfig.getInt("maxVideoLengthInMins");
     giphyApiKey = _remoteConfig.getString("giphyApiKey");
+    agoraAppID = _remoteConfig.getString("agoraAppID");
+    agoraPrimaryCertificate = _remoteConfig.getString("agoraPrimaryCertificate");
+    callTokenUrl = _remoteConfig.getString("callTokenUrl");
   }
 
   static String defaultUserProfilePicUrl =
@@ -42,4 +45,10 @@ class RemoteConfig {
   static int maxVideoLengthInMins = 3;
 
   static String giphyApiKey = "";
+
+  static String agoraAppID = "";
+
+  static String agoraPrimaryCertificate = "";
+
+  static String callTokenUrl = "";
 }

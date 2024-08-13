@@ -31,7 +31,7 @@ class ChatBoardTitleWidget extends ConsumerWidget {
     final contactId = members.firstWhereOrNull((e) => e.uid != uid)?.uid ?? '';
     return groupName != null
         ? StreamBuilder<GroupModel?>(
-            stream: ref.read(groupControllerProvider).getGroupInfoById(chatId),
+            stream: ref.read(groupControllerProvider).getGroupInfoByIdAsStream(chatId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const ChatBoardTitleSkeleton();

@@ -44,12 +44,24 @@ class GroupRepository {
         );
   }
 
-  Stream<Map<String, dynamic>?> getGroupInfoById(String groupId) {
+  Stream<Map<String, dynamic>?> getGroupInfoByIdAsStream(String groupId) {
     return database
         .collection(Collections.groups)
         .doc(groupId)
         .snapshots()
         .map((doc) => doc.data());
+  }
+
+  Future<Map<String, dynamic>?> getGroupInfoById(String groupId) async {
+    try {
+      final snapshot = await database.collection(Collections.groups).doc(groupId).get();
+      if (snapshot.exists) {
+        return snapshot.data();
+      }
+    } catch (e) {
+      logger.e(e.toString());
+    }
+    return null;
   }
 
   Future<void> createNewGroup({

@@ -48,10 +48,22 @@ class GroupController {
     });
   }
 
-  Stream<GroupModel?> getGroupInfoById(String groupId) {
-    return groupRepository.getGroupInfoById(groupId).map((map) {
+  Stream<GroupModel?> getGroupInfoByIdAsStream(String groupId) {
+    return groupRepository.getGroupInfoByIdAsStream(groupId).map((map) {
       return map != null ? GroupModel.fromMap(map) : null;
     });
+  }
+
+  Future<GroupModel?> getGroupInfoById(String groupId) async {
+    try {
+      final map = await groupRepository.getGroupInfoById(groupId);
+      if (map != null) {
+        return GroupModel.fromMap(map);
+      }
+    } catch (e) {
+      logger.e(e.toString());
+    }
+    return null;
   }
 
   Future<bool> createNewGroup({

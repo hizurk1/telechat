@@ -5,6 +5,7 @@ import 'package:telechat/app/themes/themes.dart';
 import 'package:telechat/app/widgets/error_page.dart';
 import 'package:telechat/app/widgets/loading_indicator.dart';
 import 'package:telechat/app/widgets/unfocus.dart';
+import 'package:telechat/features/call/controllers/call_controller.dart';
 import 'package:telechat/features/chat/controllers/chat_controller.dart';
 import 'package:telechat/features/chat/controllers/chat_member_controller.dart';
 import 'package:telechat/features/chat/controllers/chat_member_state.dart';
@@ -62,7 +63,12 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               ),
               actions: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    ref.read(callControllerProvider).makeCall(
+                          isGroupCall: widget.groupName != null,
+                          chatId: widget.chatId,
+                        );
+                  },
                   icon: const Icon(
                     Icons.call,
                     color: AppColors.white,

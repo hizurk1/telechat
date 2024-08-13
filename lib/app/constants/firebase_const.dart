@@ -4,4 +4,5 @@ class Collections {
   static const chats = "chats";
   static const messages = "messages";
   static const groups = "groups";
+  static const calls = "calls";
 }
