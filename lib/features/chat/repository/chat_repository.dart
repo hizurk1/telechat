@@ -215,7 +215,7 @@ class ChatRepository {
         );
   }
 
-  Stream<List<Map<String, dynamic>>> getListOfChatContacts() {
+  Stream<List<Map<String, dynamic>>> getListOfChatContactsAsStream() {
     return database
         .collection(Collections.chats)
         .where("memberIds", arrayContains: auth.currentUser!.uid)
@@ -223,6 +223,20 @@ class ChatRepository {
         .map(
           (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
         );
+  }
+
+  Future<List<Map<String, dynamic>>> getListOfChatContacts() async {
+    try {
+      final snapshot = await database
+          .collection(Collections.chats)
+          .where("memberIds", arrayContains: auth.currentUser!.uid)
+          .get();
+
+      return snapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      logger.e(e.toString());
+      return [];
+    }
   }
 
   /// This will be shown on the home screen

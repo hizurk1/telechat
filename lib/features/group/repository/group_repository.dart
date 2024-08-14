@@ -34,7 +34,7 @@ class GroupRepository {
     required this.ref,
   });
 
-  Stream<List<Map<String, dynamic>>> getListOfGroupChats() {
+  Stream<List<Map<String, dynamic>>> getListOfGroupChatsAsStream() {
     return database
         .collection(Collections.groups)
         .where("memberIds", arrayContains: auth.currentUser!.uid)
@@ -42,6 +42,20 @@ class GroupRepository {
         .map(
           (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
         );
+  }
+
+  Future<List<Map<String, dynamic>>> getListOfGroupChats() async {
+    try {
+      final snapshot = await database
+          .collection(Collections.groups)
+          .where("memberIds", arrayContains: auth.currentUser!.uid)
+          .get();
+
+      return snapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      logger.e(e.toString());
+      return [];
+    }
   }
 
   Stream<Map<String, dynamic>?> getGroupInfoByIdAsStream(String groupId) {

@@ -65,7 +65,7 @@ class AppRoutes {
         return _SlidePageRoute(
           page: const NewGroupPage(),
         );
-        
+
       case CallPage.route:
         return _SlidePageRoute(
           page: CallPage(

@@ -41,7 +41,11 @@ class ChatListGroupItemWidget extends StatelessWidget {
           return Text.rich(
             TextSpan(children: [
               TextSpan(
-                text: groupModel.lastSenderId == uid ? "You: " : "${groupModel.lastSenderName}: ",
+                text: groupModel.lastSenderId == uid
+                    ? "You: "
+                    : groupModel.lastSenderName.isEmpty
+                        ? ""
+                        : "${groupModel.lastSenderName}: ",
                 style: AppTextStyle.labelL.white.medium,
               ),
               TextSpan(text: groupModel.lastMessage),

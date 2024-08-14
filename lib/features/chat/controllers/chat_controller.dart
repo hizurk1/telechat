@@ -66,7 +66,7 @@ class ChatController {
   }
 
   Stream<List<ChatContactModel>> getListOfChatContacts() {
-    return chatRepository.getListOfChatContacts().map((listOfMaps) {
+    return chatRepository.getListOfChatContactsAsStream().map((listOfMaps) {
       return listOfMaps.map((map) => ChatContactModel.fromMap(map)).toList();
     });
   }

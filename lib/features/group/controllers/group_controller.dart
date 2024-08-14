@@ -35,7 +35,7 @@ class GroupController {
   }
 
   Stream<List<GroupModel>> getListOfGroupChats() {
-    return groupRepository.getListOfGroupChats().map((listOfMaps) {
+    return groupRepository.getListOfGroupChatsAsStream().map((listOfMaps) {
       return listOfMaps.map((map) => GroupModel.fromMap(map)).toList();
     });
   }
