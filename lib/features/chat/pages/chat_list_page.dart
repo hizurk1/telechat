@@ -24,9 +24,10 @@ class ChatListPage extends ConsumerStatefulWidget {
   ConsumerState<ChatListPage> createState() => _ChatListPageState();
 }
 
-class _ChatListPageState extends ConsumerState<ChatListPage> {
+class _ChatListPageState extends ConsumerState<ChatListPage> with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
   final visibleFab = ValueNotifier(true);
+  final chatCounter = ValueNotifier<List<int>>([-1, -1]);
 
   @override
   void initState() {
@@ -43,67 +44,89 @@ class _ChatListPageState extends ConsumerState<ChatListPage> {
   @override
   void dispose() {
     _scrollController.dispose();
+    visibleFab.dispose();
+    chatCounter.dispose();
     super.dispose();
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     final uid = ref.read(userControllerProvider).currentUser!.uid;
     return Scaffold(
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          StreamBuilder<List<ChatContactModel>>(
-            stream: ref.watch(chatControllerProvider).getListOfChatContacts(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const SliverToBoxAdapter(
-                  child: ChatListLoadingContactItemWidget(),
-                );
-              }
-              final List<ChatContactModel>? listOfContacts = snapshot.data;
-              if (listOfContacts == null) {
-                return const SliverToBoxAdapter(
-                  child: ChatListNoContactWidget(),
-                );
-              }
-              final contacts = listOfContacts.where((e) {
-                return e.createdUserId == uid || e.lastSenderId.isNotEmpty;
-              }).toList();
-              if (contacts.isEmpty) {
-                return const SliverToBoxAdapter(
-                  child: ChatListNoContactWidget(),
-                );
-              }
-              return SliverList.builder(
-                itemCount: contacts.length,
-                itemBuilder: (context, index) {
-                  return ChatListContactItemWidget(
-                    chatContact: contacts[index],
+      body: Stack(
+        children: [
+          CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              StreamBuilder<List<ChatContactModel>>(
+                stream: ref.watch(chatControllerProvider).getListOfChatContacts(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const SliverToBoxAdapter(
+                      child: ChatListLoadingContactItemWidget(),
+                    );
+                  }
+                  final List<ChatContactModel>? listOfContacts = snapshot.data;
+                  if (listOfContacts == null) {
+                    return const SliverToBoxAdapter(child: SizedBox());
+                  }
+                  final contacts = listOfContacts.where((e) {
+                    return e.createdUserId == uid || e.lastSenderId.isNotEmpty;
+                  }).toList();
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    chatCounter.value = [contacts.length, chatCounter.value[1]];
+                  });
+                  if (contacts.isEmpty) {
+                    return const SliverToBoxAdapter(child: SizedBox());
+                  }
+                  return SliverList.builder(
+                    itemCount: contacts.length,
+                    itemBuilder: (context, index) {
+                      return ChatListContactItemWidget(
+                        chatContact: contacts[index],
+                      );
+                    },
                   );
                 },
-              );
-            },
-          ),
-          StreamBuilder<List<GroupModel>>(
-            stream: ref.watch(groupControllerProvider).getListOfGroupChats(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return SliverToBoxAdapter(
-                  child: Container(),
-                );
-              }
-              final List<GroupModel>? listOfGroups = snapshot.data;
-              return listOfGroups.isNullOrEmpty
-                  ? SliverToBoxAdapter(child: Container())
-                  : SliverList.builder(
-                      itemCount: listOfGroups!.length,
-                      itemBuilder: (context, index) {
-                        return ChatListGroupItemWidget(
-                          groupModel: listOfGroups[index],
-                        );
-                      },
+              ),
+              StreamBuilder<List<GroupModel>>(
+                stream: ref.watch(groupControllerProvider).getListOfGroupChats(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const SliverToBoxAdapter(
+                      child: SizedBox(),
                     );
+                  }
+                  final List<GroupModel>? listOfGroups = snapshot.data;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    chatCounter.value = [chatCounter.value[0], (listOfGroups?.length ?? 0)];
+                  });
+                  return listOfGroups.isNullOrEmpty
+                      ? const SliverToBoxAdapter(child: SizedBox())
+                      : SliverList.builder(
+                          itemCount: listOfGroups!.length,
+                          itemBuilder: (context, index) {
+                            return ChatListGroupItemWidget(
+                              groupModel: listOfGroups[index],
+                            );
+                          },
+                        );
+                },
+              ),
+            ],
+          ),
+          ValueListenableBuilder<List<int>>(
+            valueListenable: chatCounter,
+            child: const ChatListNoContactWidget(),
+            builder: (context, value, child) {
+              if (value.every((e) => e == 0)) {
+                return child!;
+              }
+              return const SizedBox();
             },
           ),
         ],

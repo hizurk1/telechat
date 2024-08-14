@@ -177,4 +177,26 @@ class GroupController {
       logger.e(e.toString());
     }
   }
+
+  Future<void> sendMessageAsCallInGroup({
+    required String groupId,
+    required String message,
+  }) async {
+    try {
+      final senderModel = await ref.read(userControllerProvider).getUserData();
+      if (senderModel == null) return;
+
+      // Send message
+      final messageReply = ref.read(messageReplyProvider);
+      cancelReplyMessage();
+      await groupRepository.sendMessageAsCallInGroup(
+        groupId: groupId,
+        message: message,
+        senderModel: senderModel,
+        messageReply: messageReply,
+      );
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
 }

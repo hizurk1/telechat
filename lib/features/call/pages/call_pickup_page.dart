@@ -5,6 +5,7 @@ import 'package:telechat/app/themes/app_color.dart';
 import 'package:telechat/app/themes/app_text_theme.dart';
 import 'package:telechat/app/widgets/cached_network_image.dart';
 import 'package:telechat/app/widgets/gap.dart';
+import 'package:telechat/features/call/controllers/call_controller.dart';
 import 'package:telechat/features/call/models/call_model.dart';
 import 'package:telechat/features/call/pages/call_page.dart';
 
@@ -54,7 +55,13 @@ class CallPickupPage extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 IconButton.filled(
-                  onPressed: () {},
+                  onPressed: () => ref.read(callControllerProvider).endCall(
+                        callerId: call.callerId,
+                        chatId: call.callerId,
+                        memberIds: call.receiverIds,
+                        timeCalledInSec: 0,
+                        isGroupCall: call.isGroup,
+                      ),
                   style: const ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll(Colors.redAccent),
                   ),
@@ -69,7 +76,7 @@ class CallPickupPage extends ConsumerWidget {
                   onPressed: () => Navigator.pushNamed(context, CallPage.route, arguments: {
                     "channelId": call.callId,
                     "callModel": call,
-                    "isGroup": false,
+                    "isGroup": call.isGroup,
                   }),
                   style: const ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll(Colors.green),

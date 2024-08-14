@@ -148,6 +148,28 @@ class ChatController {
     }
   }
 
+  Future<void> sendMessageAsCall({
+    required String chatId,
+    required String message,
+  }) async {
+    try {
+      final senderModel = await ref.read(userControllerProvider).getUserData();
+      if (senderModel == null) return;
+
+      // Send message
+      final messageReply = ref.read(messageReplyProvider);
+      cancelReplyMessage();
+      await chatRepository.sendMessageAsCall(
+        chatId: chatId,
+        message: message,
+        senderModel: senderModel,
+        messageReply: messageReply,
+      );
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
+
   Future<GiphyGif?> pickGIF() async {
     if (RemoteConfig.giphyApiKey.isNotEmpty) {
       try {

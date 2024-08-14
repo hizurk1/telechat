@@ -73,6 +73,23 @@ class ChatBoardMessageReplyContentWidget extends StatelessWidget {
           ),
         );
         break;
+      case MessageEnum.call:
+        child = Container(
+          height: 40.r,
+          width: 40.r,
+          decoration: BoxDecoration(
+            color: AppColors.iconGrey.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(6.r),
+          ),
+          child: Center(
+            child: Icon(
+              Icons.video_call_rounded,
+              color: AppColors.iconGrey,
+              size: 20.r,
+            ),
+          ),
+        );
+        break;
     }
 
     return Row(

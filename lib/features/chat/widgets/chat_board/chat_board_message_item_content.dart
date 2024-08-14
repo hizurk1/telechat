@@ -62,8 +62,42 @@ class _ChatMessageItemContent extends StatelessWidget {
         );
       case MessageEnum.audio:
         return ChatBoardMessageAudioWidget(audioUrl: url);
-      default:
-        return child;
+      case MessageEnum.call:
+        final timeInSec = int.tryParse(message);
+        final callMessage = timeInSec != null
+            ? (timeInSec > 0 ? "Call ended: ${timeInSec.toTime}" : "Call declined")
+            : 'Call ended';
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.w).copyWith(top: 8.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Video call",
+                textAlign: TextAlign.start,
+                style: AppTextStyle.bodyM.primary.medium,
+              ),
+              const Gap.xsmall(),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.video_call_rounded,
+                    color: AppColors.textGrey,
+                    size: 20.r,
+                  ),
+                  const Gap.xsmall(),
+                  Text(
+                    callMessage,
+                    textAlign: TextAlign.start,
+                    style: AppTextStyle.bodyS.white,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
     }
   }
 }

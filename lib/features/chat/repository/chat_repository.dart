@@ -173,6 +173,34 @@ class ChatRepository {
     }
   }
 
+  Future<void> sendMessageAsCall({
+    required String chatId,
+    required UserModel senderModel,
+    required String message,
+    required MessageReply? messageReply,
+  }) async {
+    try {
+      final timeSent = DateTime.now();
+
+      await _updateLastMessageInChat(
+        chatId: chatId,
+        timeSent: timeSent,
+        lastMessage: MessageEnum.call.message,
+      );
+
+      await _saveMessageToMessagesSubCollection(
+        chatId: chatId,
+        senderModel: senderModel,
+        timeSent: timeSent,
+        messageType: MessageEnum.call,
+        message: message,
+        messageReply: messageReply,
+      );
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
+
   Stream<List<Map<String, dynamic>>> getListOfChatMessages({
     required String chatId,
   }) {

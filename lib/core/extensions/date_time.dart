@@ -36,3 +36,19 @@ extension DateTimeExt on DateTime {
     return year == other.year && month == other.month && day == other.day;
   }
 }
+
+extension TimeFormat on int {
+  String get toTime {
+    int hours = this ~/ 3600;
+    int minutes = (this % 3600) ~/ 60;
+    int seconds = this % 60;
+
+    if (hours > 0) {
+      return '${hours.toString().padLeft(2, '0')}h${minutes.toString().padLeft(2, '0')}m${seconds.toString().padLeft(2, '0')}s';
+    } else if (minutes > 0) {
+      return '${minutes.toString().padLeft(2, '0')}m${seconds.toString().padLeft(2, '0')}s';
+    } else {
+      return '${seconds.toString().padLeft(2, '0')}s';
+    }
+  }
+}

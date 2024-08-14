@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:telechat/app/utils/navigator.dart';
 import 'package:telechat/core/config/app_log.dart';
 import 'package:telechat/features/call/models/call_model.dart';
 import 'package:telechat/features/call/pages/call_page.dart';
 import 'package:telechat/features/call/repository/call_repository.dart';
+import 'package:telechat/features/chat/controllers/chat_controller.dart';
 import 'package:telechat/features/chat/controllers/chat_member_controller.dart';
 import 'package:telechat/features/group/controllers/group_controller.dart';
 import 'package:telechat/shared/controllers/user_controller.dart';
@@ -13,16 +15,19 @@ final callControllerProvider = Provider((ref) {
   final callRepository = ref.read(callRepositoryProvider);
   return CallController(
     callRepository: callRepository,
+    auth: FirebaseAuth.instance,
     ref: ref,
   );
 });
 
 class CallController {
   final CallRepository callRepository;
+  final FirebaseAuth auth;
   final ProviderRef ref;
 
   const CallController({
     required this.callRepository,
+    required this.auth,
     required this.ref,
   });
 
@@ -34,9 +39,27 @@ class CallController {
 
   Future<void> endCall({
     required String callerId,
+    required String chatId,
     required List<String> memberIds,
+    required int timeCalledInSec,
+    required bool isGroupCall,
   }) async {
     await callRepository.endCall(callerId: callerId, memberIds: memberIds);
+
+    if (auth.currentUser!.uid == callerId) {
+      if (isGroupCall) {
+        await ref.read(groupControllerProvider).sendMessageAsCallInGroup(
+              groupId: chatId,
+              message: timeCalledInSec.toString(),
+            );
+      } else {
+        await ref.read(chatControllerProvider).sendMessageAsCall(
+              chatId: chatId,
+              message: timeCalledInSec.toString(),
+            );
+      }
+    }
+
     AppNavigator.pop();
   }
 
@@ -54,10 +77,12 @@ class CallController {
 
       CallModel callerModel = CallModel(
         callId: callId,
+        chatId: chatId,
         callerId: userModel.uid,
         callerName: userModel.name,
         callerAvatar: userModel.profileImage,
         receiverIds: memberIds,
+        isGroup: isGroupCall,
         hasDialled: true,
       );
 

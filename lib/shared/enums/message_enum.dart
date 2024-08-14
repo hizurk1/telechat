@@ -3,7 +3,8 @@ enum MessageEnum {
   image,
   audio,
   video,
-  gif;
+  gif,
+  call;
 
   static MessageEnum fromString(String type) {
     return switch (type) {
@@ -12,6 +13,7 @@ enum MessageEnum {
       "audio" => MessageEnum.audio,
       "video" => MessageEnum.video,
       "gif" => MessageEnum.gif,
+      "call" => MessageEnum.call,
       String() => MessageEnum.text,
     };
   }
@@ -23,6 +25,7 @@ enum MessageEnum {
       MessageEnum.audio => "🔉 Audio",
       MessageEnum.video => "📽️ Video",
       MessageEnum.gif => "✨ GIF",
+      MessageEnum.call => "📞 Call",
     };
   }
 }

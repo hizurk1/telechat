@@ -221,6 +221,38 @@ class GroupRepository {
     }
   }
 
+  Future<void> sendMessageAsCallInGroup({
+    required String groupId,
+    required String message,
+    required UserModel senderModel,
+    required MessageReply? messageReply,
+  }) async {
+    try {
+      final timeSent = DateTime.now();
+
+      //! /groups/{groupId}/data
+      await _saveLastMessageInGroup(
+        groupId: groupId,
+        senderModel: senderModel,
+        timeSent: timeSent,
+        textMessage: MessageEnum.call.message,
+      );
+
+      //! /groups/{groupId}/messages/{messageId}/data
+      await _saveMessageToMessagesSubCollectionInGroup(
+        groupId: groupId,
+        senderId: senderModel.uid,
+        timeSent: timeSent,
+        messageType: MessageEnum.call,
+        message: message,
+        username: senderModel.name,
+        messageReply: messageReply,
+      );
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
+
   Future<void> _saveLastMessageInGroup({
     required String groupId,
     required String textMessage,

@@ -25,6 +25,7 @@ class CallPage extends ConsumerStatefulWidget {
 }
 
 class _CallPageState extends ConsumerState<CallPage> {
+  final _stopwatch = Stopwatch();
   AgoraClient? _agoraClient;
 
   @override
@@ -42,7 +43,14 @@ class _CallPageState extends ConsumerState<CallPage> {
 
   _initAgora() async {
     await _agoraClient!.initialize();
+    _stopwatch.start();
     setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _stopwatch.stop();
+    super.dispose();
   }
 
   @override
@@ -58,10 +66,14 @@ class _CallPageState extends ConsumerState<CallPage> {
                     client: _agoraClient!,
                     disconnectButtonChild: IconButton.filled(
                       onPressed: () async {
+                        _stopwatch.stop();
                         await _agoraClient!.engine.leaveChannel();
                         await ref.read(callControllerProvider).endCall(
                               callerId: widget.callModel.callerId,
+                              chatId: widget.callModel.chatId,
                               memberIds: widget.callModel.receiverIds,
+                              timeCalledInSec: _stopwatch.elapsed.inSeconds,
+                              isGroupCall: widget.isGroup,
                             );
                       },
                       style: const ButtonStyle(
