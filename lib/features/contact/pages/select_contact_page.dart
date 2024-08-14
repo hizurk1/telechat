@@ -5,14 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/constants/gen/assets.gen.dart';
 import 'package:telechat/app/themes/app_color.dart';
 import 'package:telechat/app/themes/app_text_theme.dart';
-import 'package:telechat/app/utils/navigator.dart';
 import 'package:telechat/app/widgets/error_page.dart';
 import 'package:telechat/app/widgets/gap.dart';
 import 'package:telechat/app/widgets/no_border_text_field.dart';
 import 'package:telechat/app/widgets/unfocus.dart';
 import 'package:telechat/core/extensions/build_context.dart';
 import 'package:telechat/features/chat/controllers/chat_controller.dart';
-import 'package:telechat/features/chat/pages/chat_page.dart';
 import 'package:telechat/features/contact/controllers/contact_controller.dart';
 import 'package:telechat/features/contact/controllers/contact_state.dart';
 import 'package:telechat/features/contact/pages/add_contact_page.dart';
@@ -154,19 +152,8 @@ class _SelectContactPageState extends ConsumerState<SelectContactPage> {
                         itemBuilder: (context, index) {
                           final contact = state.searchList[index];
                           return ContactItemWidget(
-                            onTap: () async {
-                              AppNavigator.showLoading();
-                              final chatModel = await ref
-                                  .read(chatControllerProvider)
-                                  .createChat(contactId: contact.uid);
-                              AppNavigator.pop();
-                              if (chatModel != null) {
-                                AppNavigator.pushReplacementNamed(ChatPage.route, arguments: {
-                                  "chatId": chatModel.chatId,
-                                  "memberIds": chatModel.memberIds,
-                                });
-                              }
-                            },
+                            onTap: () =>
+                                ref.read(chatControllerProvider).createChat(contactId: contact.uid),
                             name: contact.name,
                             subText: contact.phoneNumber,
                             imageUrl: contact.profileImage,

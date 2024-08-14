@@ -12,6 +12,7 @@ import 'package:telechat/core/error_handler/error.dart';
 import 'package:telechat/core/extensions/string.dart';
 import 'package:telechat/features/chat/models/chat_contact_model.dart';
 import 'package:telechat/features/chat/models/chat_message_model.dart';
+import 'package:telechat/features/chat/pages/chat_page.dart';
 import 'package:telechat/features/chat/providers/message_reply_provider.dart';
 import 'package:telechat/features/chat/repository/chat_repository.dart';
 import 'package:telechat/shared/controllers/user_controller.dart';
@@ -37,10 +38,32 @@ class ChatController {
     required this.ref,
   });
 
-  Future<ChatContactModel?> createChat({
+  Future<void> createChat({
     required String contactId,
   }) async {
-    return await chatRepository.createChat(contactId: contactId);
+    AppNavigator.showLoading();
+
+    final maps = await chatRepository.getListOfChatContacts();
+    final contacts = maps.map((map) => ChatContactModel.fromMap(map)).toList();
+    final hasExisted = contacts.any((e) => e.memberIds.contains(contactId));
+    if (hasExisted) {
+      AppNavigator.pop();
+      AppNavigator.showMessage(
+        "This contact has already created a chat",
+        type: SnackbarType.info,
+      );
+      return;
+    }
+
+    final chatModel = await chatRepository.createChat(contactId: contactId);
+    AppNavigator.pop();
+
+    if (chatModel != null) {
+      AppNavigator.pushReplacementNamed(ChatPage.route, arguments: {
+        "chatId": chatModel.chatId,
+        "memberIds": chatModel.memberIds,
+      });
+    }
   }
 
   Future<void> updateChatMessageAsSeen({
