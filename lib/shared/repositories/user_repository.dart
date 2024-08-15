@@ -63,16 +63,6 @@ class UserRepository {
     }
   }
 
-  Future<void> updateUserDataToDB({
-    required Map<String, dynamic> map,
-  }) async {
-    try {
-      await database.collection(Collections.users).doc(currentUser?.uid).update(map);
-    } catch (e) {
-      logger.e(e.toString());
-    }
-  }
-
   FutureEither<void> saveUserDataToDB({
     required String uid,
     required Map<String, dynamic> map,
@@ -121,14 +111,6 @@ class UserRepository {
       await database.collection(Collections.users).doc(auth.currentUser?.uid).update({
         "isOnline": isOnline,
       });
-    } catch (e) {
-      logger.e(e.toString());
-    }
-  }
-
-  Future<void> signOut() async {
-    try {
-      await auth.signOut();
     } catch (e) {
       logger.e(e.toString());
     }

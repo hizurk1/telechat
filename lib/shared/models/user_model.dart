@@ -6,6 +6,8 @@ class UserModel extends Equatable {
   final String name;
   final String profileImage;
   final String phoneNumber;
+  final DateTime? dateOfBirth;
+  final DateTime createdDate;
   final bool isOnline;
   final List<String> contactIds;
   final List<String> blockedIds;
@@ -15,6 +17,8 @@ class UserModel extends Equatable {
     required this.name,
     required this.profileImage,
     required this.phoneNumber,
+    required this.dateOfBirth,
+    required this.createdDate,
     required this.isOnline,
     required this.contactIds,
     required this.blockedIds,
@@ -26,6 +30,8 @@ class UserModel extends Equatable {
     String? name,
     String? profileImage,
     String? phoneNumber,
+    DateTime? dateOfBirth,
+    DateTime? createdDate,
     bool? isOnline,
     List<String>? contactIds,
     List<String>? blockedIds,
@@ -36,6 +42,8 @@ class UserModel extends Equatable {
       name: name ?? this.name,
       profileImage: profileImage ?? this.profileImage,
       phoneNumber: phoneNumber ?? this.phoneNumber,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      createdDate: createdDate ?? this.createdDate,
       isOnline: isOnline ?? this.isOnline,
       contactIds: contactIds ?? this.contactIds,
       blockedIds: blockedIds ?? this.blockedIds,
@@ -49,6 +57,8 @@ class UserModel extends Equatable {
       'name': name,
       'profileImage': profileImage,
       'phoneNumber': phoneNumber,
+      'dateOfBirth': dateOfBirth?.millisecondsSinceEpoch,
+      'createdDate': createdDate.millisecondsSinceEpoch,
       'isOnline': isOnline,
       'contactIds': contactIds,
       'blockedIds': blockedIds,
@@ -62,6 +72,10 @@ class UserModel extends Equatable {
       name: map['name'] as String,
       profileImage: map['profileImage'] as String,
       phoneNumber: map['phoneNumber'] as String,
+      dateOfBirth: map['dateOfBirth'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['dateOfBirth'])
+          : null,
+      createdDate: DateTime.fromMillisecondsSinceEpoch(map['createdDate']),
       isOnline: map['isOnline'] as bool,
       contactIds: List<String>.from(map['contactIds']),
       blockedIds: List<String>.from(map['blockedIds']),
@@ -73,12 +87,14 @@ class UserModel extends Equatable {
   bool get stringify => true;
 
   @override
-  List<Object> get props {
+  List<Object?> get props {
     return [
       uid,
       name,
       profileImage,
       phoneNumber,
+      dateOfBirth,
+      createdDate,
       isOnline,
       contactIds,
       blockedIds,

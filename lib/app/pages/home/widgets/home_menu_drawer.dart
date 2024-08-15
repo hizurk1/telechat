@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/themes/app_color.dart';
 import 'package:telechat/app/themes/app_text_theme.dart';
+import 'package:telechat/features/authentication/controllers/auth_controller.dart';
 import 'package:telechat/features/contact/pages/add_contact_page.dart';
 import 'package:telechat/features/group/pages/new_group_page.dart';
-import 'package:telechat/shared/controllers/user_controller.dart';
+import 'package:telechat/features/profile/pages/profile_page.dart';
 
 import 'home_menu_drawer_header.dart';
 
@@ -22,7 +23,7 @@ class HomeMenuDrawerWidget extends StatelessWidget {
         children: [
           const HomeMenuDrawerHeaderWidget(),
           _MenuListTile(
-            onTap: () {},
+            onTap: () => Navigator.pushNamed(context, ProfilePage.route),
             title: "My profile",
             iconData: Icons.person_outline,
           ),
@@ -44,7 +45,7 @@ class HomeMenuDrawerWidget extends StatelessWidget {
           Consumer(
             builder: (context, ref, child) {
               return _MenuListTile(
-                onTap: () => ref.read(userControllerProvider).signOut(),
+                onTap: () => ref.read(authControllerProvider).signOut(),
                 title: "Sign out",
                 iconData: Icons.logout_rounded,
               );

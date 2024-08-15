@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:telechat/app/configs/remote_config.dart';
+import 'package:telechat/core/config/app_log.dart';
 import 'package:telechat/core/error_handler/error_handler.dart';
 
 final authRepositoryProvider = Provider((ref) {
@@ -62,6 +63,14 @@ class AuthRepository {
       throw AuthenticationError(message: e.message ?? '');
     } catch (e) {
       throw UnknownError(message: e.toString());
+    }
+  }
+
+  Future<void> signOut() async {
+    try {
+      await auth.signOut();
+    } catch (e) {
+      logger.e(e.toString());
     }
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:telechat/app/pages/home/home_page.dart';
+import 'package:telechat/app/pages/splash/splash_page.dart';
 import 'package:telechat/app/utils/navigator.dart';
 import 'package:telechat/app/utils/util_function.dart';
 import 'package:telechat/core/config/app_log.dart';
@@ -129,6 +130,16 @@ class AuthController {
     } catch (e) {
       logger.e(e.toString());
       onCompleted.call();
+    }
+  }
+
+  //* Sign out / Logout
+  Future<void> signOut() async {
+    try {
+      await authRepository.signOut();
+      await AppNavigator.pushReplacementNamed(SplashPage.route);
+    } catch (e) {
+      logger.e(e.toString());
     }
   }
 }

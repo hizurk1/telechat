@@ -17,6 +17,7 @@ import 'package:telechat/features/chat/pages/chat_page.dart';
 import 'package:telechat/features/contact/pages/add_contact_page.dart';
 import 'package:telechat/features/contact/pages/select_contact_page.dart';
 import 'package:telechat/features/group/pages/new_group_page.dart';
+import 'package:telechat/features/profile/pages/profile_page.dart';
 
 class AppRoutes {
   AppRoutes._();
@@ -77,6 +78,11 @@ class AppRoutes {
             callModel: args?["callModel"],
             isGroup: args?["isGroup"],
           ),
+        );
+
+      case ProfilePage.route:
+        return _SlidePageRoute(
+          page: const ProfilePage(),
         );
 
       default:
