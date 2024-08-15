@@ -39,6 +39,10 @@ class $AssetsJsonsGen {
   /// File path: assets/jsons/empty.json
   LottieGenImage get empty => const LottieGenImage('assets/jsons/empty.json');
 
+  /// File path: assets/jsons/message.json
+  LottieGenImage get message =>
+      const LottieGenImage('assets/jsons/message.json');
+
   /// File path: assets/jsons/notFound.json
   LottieGenImage get notFound =>
       const LottieGenImage('assets/jsons/notFound.json');
@@ -48,7 +52,8 @@ class $AssetsJsonsGen {
       const LottieGenImage('assets/jsons/page404.json');
 
   /// List of all assets
-  List<LottieGenImage> get values => [catError, empty, notFound, page404];
+  List<LottieGenImage> get values =>
+      [catError, empty, message, notFound, page404];
 }
 
 class $AssetsSvgsGen {

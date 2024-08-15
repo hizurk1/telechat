@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:telechat/app/constants/gen/assets.gen.dart';
+import 'package:telechat/app/pages/home/home_page.dart';
+import 'package:telechat/app/pages/intro/intro_page.dart';
+import 'package:telechat/app/pages/splash/splash_page.dart';
 import 'package:telechat/app/themes/app_color.dart';
 import 'package:telechat/app/themes/app_text_theme.dart';
 import 'package:telechat/app/widgets/gap.dart';
@@ -14,8 +17,6 @@ import 'package:telechat/features/chat/pages/chat_page.dart';
 import 'package:telechat/features/contact/pages/add_contact_page.dart';
 import 'package:telechat/features/contact/pages/select_contact_page.dart';
 import 'package:telechat/features/group/pages/new_group_page.dart';
-import 'package:telechat/features/home/pages/home_page.dart';
-import 'package:telechat/features/intro/pages/intro_page.dart';
 
 class AppRoutes {
   AppRoutes._();
@@ -24,6 +25,9 @@ class AppRoutes {
     final args = settings.arguments as Map<String, dynamic>?;
 
     switch (settings.name) {
+      case SplashPage.route:
+        return _SlidePageRoute(page: const SplashPage());
+
       case IntroPage.route:
         return _SlidePageRoute(page: const IntroPage());
 

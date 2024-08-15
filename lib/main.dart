@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:telechat/app.dart';
 import 'package:telechat/app/configs/remote_config.dart';
+import 'package:telechat/app/utils/shared_preferences.dart';
 import 'package:telechat/firebase_options.dart';
 
 Future<void> main() async {
@@ -11,6 +12,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await RemoteConfig.init();
+  await SharedPrefs.init();
   runApp(
     const ProviderScope(
       child: MyApp(),

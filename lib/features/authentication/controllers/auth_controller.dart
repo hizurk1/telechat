@@ -2,25 +2,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:telechat/app/pages/home/home_page.dart';
 import 'package:telechat/app/utils/navigator.dart';
 import 'package:telechat/app/utils/util_function.dart';
 import 'package:telechat/core/config/app_log.dart';
 import 'package:telechat/core/extensions/string.dart';
 import 'package:telechat/features/authentication/pages/fill_user_info_page.dart';
 import 'package:telechat/features/authentication/repository/auth_repository.dart';
-import 'package:telechat/features/home/pages/home_page.dart';
-import 'package:telechat/shared/controllers/user_controller.dart';
 
 import '../pages/verify_opt_page.dart';
 
 final authControllerProvider = Provider((ref) {
   final authRepository = ref.read(authRepositoryProvider);
   return AuthController(authRepository: authRepository, ref: ref);
-});
-
-final getUserDataProvider = FutureProvider((ref) async {
-  final userController = ref.read(userControllerProvider);
-  return userController.getUserData();
 });
 
 class AuthController {

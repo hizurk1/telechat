@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:telechat/app/configs/remote_config.dart';
+import 'package:telechat/app/pages/home/home_page.dart';
+import 'package:telechat/app/pages/splash/splash_page.dart';
 import 'package:telechat/app/utils/navigator.dart';
 import 'package:telechat/core/config/app_log.dart';
-import 'package:telechat/features/home/pages/home_page.dart';
 import 'package:telechat/shared/models/user_model.dart';
 import 'package:telechat/shared/repositories/cloud_storage.dart';
 import 'package:telechat/shared/repositories/user_repository.dart';
@@ -38,6 +39,15 @@ class UserController {
       userModel = UserModel.fromMap(userData);
     }
     return userModel;
+  }
+
+  //* Get user data as stream
+  Stream<UserModel?> getUserDataAsStream() {
+    return userRepository.getUserDataAsStreamFromDB().map(
+      (data) {
+        return data != null ? UserModel.fromMap(data) : null;
+      },
+    );
   }
 
   //* Get user data by id
@@ -134,6 +144,16 @@ class UserController {
   Future<void> updateUserOnlineStatus(bool isOnline) async {
     try {
       await userRepository.updateUserOnlineStatus(isOnline);
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
+
+  //* Sign out / Logout
+  Future<void> signOut() async {
+    try {
+      await userRepository.signOut();
+      await AppNavigator.pushReplacementNamed(SplashPage.route);
     } catch (e) {
       logger.e(e.toString());
     }

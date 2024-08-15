@@ -108,11 +108,27 @@ class UserRepository {
         .map((event) => event.data());
   }
 
+  Stream<Map<String, dynamic>?> getUserDataAsStreamFromDB() {
+    return database
+        .collection(Collections.users)
+        .doc(auth.currentUser!.uid)
+        .snapshots()
+        .map((event) => event.data());
+  }
+
   Future<void> updateUserOnlineStatus(bool isOnline) async {
     try {
       await database.collection(Collections.users).doc(auth.currentUser?.uid).update({
         "isOnline": isOnline,
       });
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
+
+  Future<void> signOut() async {
+    try {
+      await auth.signOut();
     } catch (e) {
       logger.e(e.toString());
     }

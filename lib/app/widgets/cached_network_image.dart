@@ -53,6 +53,16 @@ class CachedNetworkImageCustom extends StatelessWidget {
             color: AppColors.card,
           ),
         ),
+        errorWidget: (context, url, error) => Container(
+          height: size?.r ?? height,
+          width: size?.r ?? width,
+          color: AppColors.buttonGrey,
+          child: LoadingIndicatorWidget(
+            size: loadingIndicatorSize ?? 20,
+            lineWidth: 1,
+            color: AppColors.card,
+          ),
+        ),
       ),
     );
   }

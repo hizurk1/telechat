@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:telechat/app/pages/home/widgets/home_menu_drawer.dart';
+import 'package:telechat/app/themes/app_color.dart';
 import 'package:telechat/app/themes/app_text_theme.dart';
 import 'package:telechat/features/call/controllers/call_controller.dart';
 import 'package:telechat/features/call/pages/call_pickup_page.dart';
@@ -45,8 +47,8 @@ class _HomePageState extends ConsumerState<HomePage> with WidgetsBindingObserver
       children: [
         Scaffold(
           appBar: AppBar(
-            leading: const Icon(Icons.menu, color: Colors.white),
-            title: Text("Telechat", style: AppTextStyle.titleS.white.bold),
+            iconTheme: const IconThemeData(color: AppColors.white),
+            title: Text("Telechat", style: AppTextStyle.titleS.white.medium),
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 3),
@@ -57,6 +59,7 @@ class _HomePageState extends ConsumerState<HomePage> with WidgetsBindingObserver
               )
             ],
           ),
+          drawer: const HomeMenuDrawerWidget(),
           body: const ChatListPage(),
         ),
         StreamBuilder(
