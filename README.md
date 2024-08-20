@@ -6,7 +6,7 @@ This project offers a seamless chat experience along with high-quality video cal
 
 ## Features
 
-- **Real-Time Messaging**: Exchange text messages and media (image, audio, video and gif) in real-time with other users.
+- **Real-Time Messaging**: Exchange text messages and media (image, audio, video and gif) in real-time with other users, also came with seen and online status feature.
 - **Video Calls**: Engage in high-quality video calls powered by Agora.
 - **Authentication**: Secure user authentication using Firebase Auth.
 - **Cloud Firestore**: Store and sync user data in real-time with Cloud Firestore.
@@ -68,3 +68,31 @@ This project offers a seamless chat experience along with high-quality video cal
 - Clone the calling server from [here](https://github.com/hizurk1/flutter-twitch-server).
 - Follow the Heroku deployment guide to deploy the server.
 - Update the server URL in Firebase Remote Config.
+
+## Preview
+
+1. Phone authentication
+
+|Phone | Verify OTP |
+|------|-----|
+| ![Screenshot_20240820-145209_Dev (Telechat)](https://github.com/user-attachments/assets/83156d9b-0d5a-4e9b-a580-de2b9a576710) | ![Screenshot_20240820-145232_Dev (Telechat)](https://github.com/user-attachments/assets/f71bd1d0-9eb9-427b-ac40-9e9f21b7d17d)|
+
+2. Home
+
+| Home | Menu | View & Edit Profile|
+|-----|-----|-----|
+|![Screenshot_20240820-144812_Dev (Telechat)](https://github.com/user-attachments/assets/5ac9112a-ba70-4fb6-a546-e46b647be939) | ![Screenshot_20240820-145742_Dev (Telechat)](https://github.com/user-attachments/assets/4e31bfab-4801-49b2-81e1-0633536c5bb3) | ![Screenshot_20240820-145001_Dev (Telechat)](https://github.com/user-attachments/assets/08581030-d397-4785-a4ee-1fad7868ea6f) |
+
+3. Contact & group
+
+| Global search contact | Create group chat |
+|-----|-----|
+|![Screenshot_20240820-145304_Dev (Telechat)](https://github.com/user-attachments/assets/ec89689b-0620-4f45-a57b-c98983847751) | ![Screenshot_20240820-144838_Dev (Telechat)](https://github.com/user-attachments/assets/8f6ee6c5-3c3b-48db-b185-ba6c0e204b8d) |
+
+5. Chat
+
+| Message | Send media | GIF by Giphy | Video call |
+|-----|-----|-----|-----|
+| ![Screenshot_20240820-140756_Dev (Telechat)](https://github.com/user-attachments/assets/e760fdb6-eb83-4c48-b240-893f0ca21b6b) | ![Screenshot_20240820-150328_Dev (Telechat)](https://github.com/user-attachments/assets/082e72c2-ae6c-4783-a6fc-894a2af99225) | ![Screenshot_20240820-150432_Dev (Telechat)](https://github.com/user-attachments/assets/2695a2c6-167e-4c7a-9b39-750efd6bf11f) | ![Screenshot_20240820-140918_Dev (Telechat)](https://github.com/user-attachments/assets/9803dcfb-6886-4acd-93d9-9b2dcf5172ab) |
+
+
